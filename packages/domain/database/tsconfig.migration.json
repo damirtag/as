@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist-migrations",
+    "module": "commonjs",
+    "target": "es2022",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "paths": {
+      "@domain/*": ["../*/src"],
+      "@as/contracts": ["../../packages/contracts/dist"]
+    }
+  },
+  "include": ["entities/**/*", "migrations/**/*", "ormconfig.ts"]
+}

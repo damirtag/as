@@ -1,0 +1,20 @@
+{
+  "name": "as",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "migration:create": "pnpm --filter @as/database run migration:create",
+    "migration:run": "pnpm --filter @as/database run migration:run",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.27.0",
+  "devDependencies": {
+    "turbo": "^2.8.20"
+  }
+}

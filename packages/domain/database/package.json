@@ -1,0 +1,33 @@
+{
+  "name": "@as/database",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typeorm": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js",
+    "migration:create": "pnpm run typeorm -- migration:create",
+    "migration:generate": "pnpm run typeorm -- migration:generate -d ./ormconfig.ts",
+    "migration:run": "pnpm run typeorm -- migration:run -d ./ormconfig.ts",
+    "migration:revert": "pnpm run typeorm -- migration:revert -d ./ormconfig.ts"
+  },
+  "dependencies": {
+    "@as/contracts": "workspace:*",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typeorm": "^0.3.27"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "cross-env": "^10.1.0"
+  }
+}

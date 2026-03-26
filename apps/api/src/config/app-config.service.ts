@@ -1,0 +1,67 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class AppConfigService {
+  constructor(private readonly config: ConfigService) {}
+
+  // ─── App ──────────────────────────────────────────────────────────────────
+  get port(): number {
+    return this.config.get<number>('PORT', 4000);
+  }
+
+  get nodeEnv(): string {
+    return this.config.get<string>('NODE_ENV', 'development');
+  }
+
+  get isDev(): boolean {
+    return this.nodeEnv === 'development';
+  }
+
+  // ─── Database ─────────────────────────────────────────────────────────────
+  get dbHost(): string {
+    return this.config.getOrThrow<string>('DB_HOST');
+  }
+
+  get dbPort(): number {
+    return this.config.get<number>('DB_PORT', 5432);
+  }
+
+  get dbUser(): string {
+    return this.config.getOrThrow<string>('DB_USER');
+  }
+
+  get dbPassword(): string {
+    return this.config.getOrThrow<string>('DB_PASSWORD');
+  }
+
+  get dbName(): string {
+    return this.config.getOrThrow<string>('DB_NAME');
+  }
+
+  // ─── Redis ────────────────────────────────────────────────────────────────
+  get redisHost(): string {
+    return this.config.get<string>('REDIS_HOST', 'localhost');
+  }
+
+  get redisPort(): number {
+    return this.config.get<number>('REDIS_PORT', 6379);
+  }
+
+  get redisPassword(): string | undefined {
+    return this.config.get<string>('REDIS_PASSWORD');
+  }
+
+  // ─── JWT ─────────────────────────────────────────────────────────────────
+  get jwtSecret(): string {
+    return this.config.getOrThrow<string>('JWT_SECRET');
+  }
+
+  get jwtAccessTtl(): string {
+    return this.config.get<string>('JWT_ACCESS_TTL', '30m');
+  }
+
+  get jwtRefreshTtl(): string {
+    return this.config.get<string>('JWT_REFRESH_TTL', '7d');
+  }
+}
