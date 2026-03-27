@@ -6,6 +6,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from "typeorm";
 import { v7 as uuidv7 } from "uuid";
 import { User } from "./user";
@@ -20,7 +21,11 @@ export class Quote {
   @Column("text")
   text!: string;
 
+  @Column("uuid")
+  userId!: string;
+
   @ManyToOne(() => User, (user) => user.quotes, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "userId" })
   user!: User;
 
   @OneToMany(() => Comment, (comment) => comment.quote)

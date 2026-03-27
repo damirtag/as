@@ -49,7 +49,9 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
 
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repo.create(data);
-    return this.repo.save(entity);
+    const saved = await this.repo.save(entity);
+    // Reload so all columns (including FK columns like userId) are populated
+    return this.repo.findOneOrFail({ where: { id: (saved as any).id } });
   }
 
   async save(entity: T): Promise<T> {

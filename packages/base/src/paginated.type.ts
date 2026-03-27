@@ -8,15 +8,20 @@ import { Type } from "@nestjs/common";
  *   @ObjectType()
  *   export class PaginatedQuotes extends Paginated(QuoteType) {}
  */
-export function Paginated<T>(classRef: Type<T>): Type<{
+export function Paginated<T>(
+  classRef: Type<T>,
+  name?: string,
+): Type<{
   items: T[];
   total: number;
   page: number;
   limit: number;
   totalPages: number;
 }> {
-  @ObjectType({ isAbstract: true })
-  abstract class PaginatedType {
+  const typeName = name ?? `Paginated${classRef.name}`; // <- уникальное имя
+
+  @ObjectType(typeName, { isAbstract: true })
+  class PaginatedType {
     @Field(() => [classRef])
     items!: T[];
 

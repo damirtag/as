@@ -49,7 +49,7 @@ export class AppConfigService {
   }
 
   get redisPassword(): string | undefined {
-    return this.config.get<string>('REDIS_PASSWORD');
+    return this.config.get<string>('REDIS_PASS');
   }
 
   // ─── JWT ─────────────────────────────────────────────────────────────────
@@ -62,6 +62,6 @@ export class AppConfigService {
   }
 
   get jwtRefreshTtl(): string {
-    return this.config.get<string>('JWT_REFRESH_TTL', '7d');
+    return this.config.get<string>('JWT_REFRESH_TTL', '30d');
   }
 }

@@ -112,10 +112,7 @@ export class BaseGraphQLSchemaConfigService implements GqlOptionsFactory<ApolloD
         return error;
       },
 
-      // Allow subscriptions to be added later via plugins
-      subscriptions: {
-        "graphql-ws": true,
-      },
+      subscriptions: {},
     };
   }
 }

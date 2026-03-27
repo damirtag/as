@@ -5,7 +5,7 @@ AppDataSource.initialize()
     console.log("Database initialized successfully!");
     process.exit(0);
   })
-  .catch((err) => {
+  .catch((err: Error) => {
     console.error("Error initializing database:", err);
     process.exit(1);
   });

@@ -1,0 +1,128 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CommentType {
+  createdAt: DateTime!
+  id: ID!
+  quoteId: ID!
+  text: String!
+  updatedAt: DateTime!
+  userId: ID!
+}
+
+input CreateCommentInput {
+  quoteId: ID!
+  text: String!
+  userId: ID!
+}
+
+input CreateQuoteInput {
+  text: String!
+  userId: ID!
+}
+
+input CreateReactionInput {
+  commentId: ID
+  quoteId: ID!
+  type: ReactionType!
+  userId: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createCommentType(input: CreateCommentInput!): CommentType!
+  createQuoteType(input: CreateQuoteInput!): QuoteType!
+  createReactionTypeGql(input: CreateReactionInput!): ReactionTypeGql!
+  deleteCommentType(id: ID!): Boolean!
+  deleteQuoteType(id: ID!): Boolean!
+  deleteReactionTypeGql(id: ID!): Boolean!
+  updateCommentType(id: ID!, input: UpdateCommentInput!): CommentType!
+  updateQuoteType(id: ID!, input: UpdateQuoteInput!): QuoteType!
+  updateReactionTypeGql(id: ID!, input: UpdateReactionInput!): ReactionTypeGql!
+}
+
+type PaginatedCommentType {
+  items: [CommentType!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+type PaginatedQuoteType {
+  items: [QuoteType!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+type PaginatedReactionTypeGql {
+  items: [ReactionTypeGql!]!
+  limit: Int!
+  page: Int!
+  total: Int!
+  totalPages: Int!
+}
+
+input PaginationInput {
+  limit: Int = 20
+  page: Int = 1
+}
+
+type Query {
+  findAllCommentType: [CommentType!]!
+  findAllQuoteType: [QuoteType!]!
+  findAllReactionTypeGql: [ReactionTypeGql!]!
+  findOneCommentType(id: ID!): CommentType!
+  findOneQuoteType(id: ID!): QuoteType!
+  findOneReactionTypeGql(id: ID!): ReactionTypeGql!
+  findPaginatedCommentType(pagination: PaginationInput!): PaginatedCommentType!
+  findPaginatedQuoteType(pagination: PaginationInput!): PaginatedQuoteType!
+  findPaginatedReactionTypeGql(pagination: PaginationInput!): PaginatedReactionTypeGql!
+}
+
+type QuoteType {
+  createdAt: DateTime!
+  id: ID!
+  text: String!
+  updatedAt: DateTime!
+  userId: ID!
+}
+
+enum ReactionType {
+  Angry
+  Dislike
+  Handshake
+  Laugh
+  Like
+  Love
+  Rofl
+  Sad
+}
+
+type ReactionTypeGql {
+  commentId: ID
+  createdAt: DateTime!
+  id: ID!
+  quoteId: ID!
+  type: ReactionType!
+  userId: ID!
+}
+
+input UpdateCommentInput {
+  text: String
+}
+
+input UpdateQuoteInput {
+  text: String
+}
+
+input UpdateReactionInput {
+  type: ReactionType!
+}

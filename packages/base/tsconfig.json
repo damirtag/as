@@ -2,9 +2,17 @@
   "extends": "../../tsconfig.package.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./src", // явно указываем исходники
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "incremental": true,
+    "module": "commonjs",
     "moduleResolution": "node",
-    "ignoreDeprecations": "6.0"
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "ignoreDeprecations": "6.0" // подавляем предупреждения TS7
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
