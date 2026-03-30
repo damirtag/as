@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { v7 as uuidv7 } from "uuid";
+import { Role } from "../enum";
 import { Quote } from "./quote";
 import { RefreshTokens } from "./auth";
 import { Comment } from "./comment";
@@ -23,8 +24,14 @@ export class User {
   @Column()
   passwordHash!: string;
 
+  @Column()
+  username!: string;
+
+  @Column({ type: "varchar", default: Role.USER })
+  role!: Role;
+
   @Column({ nullable: true })
-  username?: string;
+  name?: string;
 
   @CreateDateColumn()
   createdAt!: Date;

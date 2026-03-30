@@ -11,7 +11,7 @@ import { Paginated } from "../paginated.type";
  *
  * Usage:
  *   @Resolver(() => UserType)
- *   export class UsersResolver extends BaseResolver(User, UserType, CreateUserInput, UpdateUserInput) {}
+ *   export class UsersResolver extends BaseReadResolver(UserType) {}
  */
 export function BaseResolver<
   TEntity extends ObjectLiteral,
@@ -24,15 +24,10 @@ export function BaseResolver<
   UpdateInput: Type<TUpdateInput>,
 ) {
   const PaginatedEntity = Paginated(EntityType);
-  // Abstract so NestJS doesn't try to register it directly
+  // abstract so nest doesnt try to register it directly
   @Resolver(() => EntityType, { isAbstract: true })
   abstract class BaseResolverHost {
     constructor(public readonly service: BaseService<TEntity>) {}
-
-    @Query(() => [EntityType], { name: `findAll${EntityType.name}` })
-    findAll() {
-      return this.service.findAll();
-    }
 
     @Query(() => EntityType, { name: `findOne${EntityType.name}` })
     findOne(@Args("id", { type: () => ID }) id: string) {
@@ -67,4 +62,35 @@ export function BaseResolver<
   }
 
   return BaseResolverHost;
+}
+
+/**
+ * Read-only resolver factory (queries only).
+ *
+ * Useful for entities where you don't want to expose create/update/delete.
+ */
+export function BaseReadResolver<
+  TEntity extends ObjectLiteral,
+  TType extends object,
+>(EntityType: Type<TType>) {
+  const PaginatedEntity = Paginated(EntityType);
+
+  @Resolver(() => EntityType, { isAbstract: true })
+  abstract class BaseReadResolverHost {
+    constructor(public readonly service: BaseService<TEntity>) {}
+
+    @Query(() => EntityType, { name: `findOne${EntityType.name}` })
+    findOne(@Args("id", { type: () => ID }) id: string) {
+      return this.service.findByIdOrFail(id);
+    }
+
+    @Query(() => PaginatedEntity, {
+      name: `findPaginated${EntityType.name}`,
+    })
+    findPaginated(@Args("pagination") pagination: PaginationInput) {
+      return this.service.findPaginated(pagination);
+    }
+  }
+
+  return BaseReadResolverHost;
 }

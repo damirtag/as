@@ -1,6 +1,10 @@
+import { Role } from "enum";
+
 export interface IJwtPayload {
   sub: string;
   email: string;
+  type: string;
+  role: Role;
   iat?: number;
   exp?: number;
 }

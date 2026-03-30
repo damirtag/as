@@ -15,11 +15,15 @@ export class RegisterDto {
   @MaxLength(100, { message: "Пароль слишком длинный" })
   password!: string;
 
+  @IsString()
+  @MinLength(3, { message: "Юзернейм должен быть не менее 3 символов" })
+  @MaxLength(30, { message: "Юзернейм слишком длинный" })
+  username!: string;
+
   @IsOptional()
   @IsString()
-  @MinLength(3, { message: "Имя пользователя должно быть не менее 3 символов" })
-  @MaxLength(30, { message: "Имя пользователя слишком длинное" })
-  username?: string;
+  @MaxLength(40, { message: "Имя слишком длинное" })
+  name?: string;
 }
 
 export class LoginDto {
@@ -31,6 +35,11 @@ export class LoginDto {
 }
 
 export class LogoutDto {
+  @IsString()
+  refreshToken!: string;
+}
+
+export class RefreshDto {
   @IsString()
   refreshToken!: string;
 }

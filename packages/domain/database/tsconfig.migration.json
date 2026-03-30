@@ -12,5 +12,9 @@
       "@as/contracts": ["../../packages/contracts/dist"]
     }
   },
-  "include": ["entities/**/*", "migrations/**/*", "ormconfig.ts"]
+  "include": [
+    "src/**/*",
+    "../../contracts/src/entities/**/*",
+    "src/ormconfig.ts"
+  ]
 }

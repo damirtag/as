@@ -6,11 +6,13 @@ import { Repository } from 'typeorm';
 import { User } from '@as/contracts';
 import { UserRepository } from './users.repository';
 import { UserService } from './users.service';
+import { UsersResolver } from './users.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   providers: [
     UserService,
+    UsersResolver,
     {
       provide: UserRepository,
       useFactory: (repo: Repository<User>) => new UserRepository(repo),

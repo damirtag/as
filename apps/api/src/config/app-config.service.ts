@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 export class AppConfigService {
   constructor(private readonly config: ConfigService) {}
 
-  // ─── App ──────────────────────────────────────────────────────────────────
   get port(): number {
     return this.config.get<number>('PORT', 4000);
   }
@@ -18,7 +17,6 @@ export class AppConfigService {
     return this.nodeEnv === 'development';
   }
 
-  // ─── Database ─────────────────────────────────────────────────────────────
   get dbHost(): string {
     return this.config.getOrThrow<string>('DB_HOST');
   }
@@ -39,7 +37,6 @@ export class AppConfigService {
     return this.config.getOrThrow<string>('DB_NAME');
   }
 
-  // ─── Redis ────────────────────────────────────────────────────────────────
   get redisHost(): string {
     return this.config.get<string>('REDIS_HOST', 'localhost');
   }
@@ -52,7 +49,6 @@ export class AppConfigService {
     return this.config.get<string>('REDIS_PASS');
   }
 
-  // ─── JWT ─────────────────────────────────────────────────────────────────
   get jwtSecret(): string {
     return this.config.getOrThrow<string>('JWT_SECRET');
   }

@@ -18,7 +18,7 @@ import {
 import { SchemaConfigModule } from '../modules/schema-config/schema-config.module';
 import { AppSchemaConfigService } from '../modules/schema-config/schema-config.service';
 import { AppConfigService } from '../config';
-import { JwtAuthGuard } from '../common/guards';
+import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
 
 @Module({
   imports: [
@@ -40,6 +40,8 @@ import { JwtAuthGuard } from '../common/guards';
   providers: [
     AppConfigService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: OwnerGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],

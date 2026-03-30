@@ -9,7 +9,7 @@ import { User } from '@as/contracts';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { UserRepository } from '../users/users.repository';
 import { AppConfigService } from '../../config/app-config.service';
-import { RegisterDto, LoginDto } from '@as/contracts';
+import { RegisterDto, LoginDto, ITokenPair } from '@as/contracts';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +23,8 @@ export class AuthService {
   async register(dto: RegisterDto) {
     await this.ensureEmailFree(dto.email);
     const passwordHash = await bcrypt.hash(dto.password, 10);
-    const user = await this.usersRepo.create({ ...dto, passwordHash });
 
+    const user = await this.usersRepo.create({ ...dto, passwordHash });
     const tokens = await this.issueTokens(user);
 
     return {
@@ -40,10 +40,10 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const user = await this.usersRepo.findByEmail(dto.email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('Email already exists');
 
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
-    if (!valid) throw new UnauthorizedException('Invalid credentials');
+    if (!valid) throw new UnauthorizedException('Incorrect password');
 
     const tokens = await this.issueTokens(user);
 
@@ -99,7 +99,7 @@ export class AuthService {
     if (exists) throw new BadRequestException('Email already in use');
   }
 
-  private async issueTokens(user: User) {
+  private async issueTokens(user: User): Promise<ITokenPair> {
     await this.tokensRepo.revokeAllForUser(user.id);
 
     const accessToken = await this.jwt.signAsync(

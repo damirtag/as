@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Comment, Quote, User } from '@as/contracts';
+import { Comment, IPaginationInput, Quote, User } from '@as/contracts';
 import { BaseService } from '@as/base';
 import { CommentRepository } from './comments.repository';
 
@@ -7,6 +7,16 @@ import { CommentRepository } from './comments.repository';
 export class CommentService extends BaseService<Comment> {
   constructor(private readonly commentRepository: CommentRepository) {
     super(commentRepository);
+  }
+
+  async findCommentsPaginatedByQuoteId(
+    quoteId: string,
+    pagination: IPaginationInput,
+  ) {
+    return this.commentRepository.findCommentsPaginatedByQuoteId(
+      quoteId,
+      pagination,
+    );
   }
 
   override async create(
@@ -20,6 +30,12 @@ export class CommentService extends BaseService<Comment> {
       ...(quoteId
         ? ({ quoteId, quote: { id: quoteId } as Quote } as never)
         : {}),
+    });
+  }
+
+  async findByUserId(userId: string, pagination: IPaginationInput) {
+    return this.commentRepository.findPaginated(pagination, {
+      where: { userId },
     });
   }
 }

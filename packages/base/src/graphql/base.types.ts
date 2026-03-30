@@ -6,31 +6,12 @@ import {
   Int,
   registerEnumType,
 } from "@nestjs/graphql";
-import { ReactionType } from "@as/contracts";
+import { ReactionType, Role } from "@as/contracts";
+import { Paginated } from "../paginated.type";
 
-@InputType()
-export class CreateUserInput {
-  @Field()
-  email!: string;
-
-  @Field()
-  password!: string;
-
-  @Field({ nullable: true })
-  username?: string;
-}
-
-@InputType()
-export class UpdateUserInput {
-  @Field({ nullable: true })
-  email?: string;
-
-  @Field({ nullable: true })
-  password?: string;
-
-  @Field({ nullable: true })
-  username?: string;
-}
+registerEnumType(Role, {
+  name: "Role",
+});
 
 @ObjectType()
 export class UserType {
@@ -40,8 +21,14 @@ export class UserType {
   @Field()
   email!: string;
 
+  @Field()
+  username!: string;
+
   @Field({ nullable: true })
-  username?: string;
+  name?: string;
+
+  @Field(() => Role)
+  role!: Role;
 
   @Field()
   createdAt!: Date;
@@ -59,7 +46,10 @@ export class RegisterInput {
   password!: string;
 
   @Field({ nullable: true })
-  username?: string;
+  name?: string;
+
+  @Field()
+  username!: string;
 }
 
 @InputType()
@@ -93,24 +83,6 @@ export class CreateQuoteInput {
 export class UpdateQuoteInput {
   @Field({ nullable: true })
   text?: string;
-}
-
-@ObjectType()
-export class QuoteType {
-  @Field(() => ID)
-  id!: string;
-
-  @Field()
-  text!: string;
-
-  @Field(() => ID)
-  userId!: string;
-
-  @Field()
-  createdAt!: Date;
-
-  @Field()
-  updatedAt!: Date;
 }
 
 @InputType()
@@ -198,11 +170,68 @@ export class ReactionTypeGql {
   createdAt!: Date;
 }
 
-@InputType()
-export class PaginationInput {
-  @Field(() => Int, { nullable: true })
-  page?: number;
+@ObjectType()
+export class ReactionCountByTypeGql {
+  @Field(() => ReactionType)
+  type!: ReactionType;
 
-  @Field(() => Int, { nullable: true })
-  limit?: number;
+  @Field(() => Int)
+  count!: number;
 }
+
+@ObjectType()
+export class QuoteReactionsSummaryGql {
+  @Field(() => Int)
+  totalCount!: number;
+
+  @Field(() => [ReactionCountByTypeGql])
+  counts!: ReactionCountByTypeGql[];
+}
+
+@ObjectType()
+export class QuoteType {
+  @Field(() => ID)
+  id!: string;
+
+  @Field()
+  text!: string;
+
+  @Field(() => ID)
+  userId!: string;
+
+  @Field()
+  createdAt!: Date;
+
+  @Field()
+  updatedAt!: Date;
+
+  /**
+   * Агрегированные реакции на цитату (реакции к comment не включаем).
+   * Считается через GROUP BY по `Reaction.type`.
+   */
+  @Field(() => QuoteReactionsSummaryGql)
+  reactionsSummary!: QuoteReactionsSummaryGql;
+
+  /**
+   * Опционально: детальные реакции (с `userId`).
+   * Если `includeUsers=false`, то сервер может вернуть `null`.
+   */
+  @Field(() => PaginatedReactions, { nullable: true })
+  reactionsPaginated?: unknown;
+
+  /**
+   * Пагинированные комментарии к цитате.
+   * В `total` лежит общее количество комментариев.
+   */
+  @Field(() => PaginatedComments)
+  commentsPaginated!: unknown;
+}
+
+export const PaginatedComments = Paginated(CommentType, "PaginatedComments");
+
+export const PaginatedReactions = Paginated(
+  ReactionTypeGql,
+  "PaginatedReactions",
+);
+
+export const PaginatedQuotes = Paginated(QuoteType, "PaginatedQuotes");

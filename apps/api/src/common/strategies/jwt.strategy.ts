@@ -3,11 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AppConfigService } from '../../config/app-config.service';
 import { UserService } from '../../modules/users/users.service';
-
-export interface JwtPayload {
-  sub: string;
-  type?: string;
-}
+import { IJwtPayload } from '@as/contracts';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: IJwtPayload) {
     if (payload.type === 'refresh') {
       throw new UnauthorizedException(
         'Refresh token cannot be used as access token',

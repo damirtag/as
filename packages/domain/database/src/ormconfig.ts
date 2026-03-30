@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { User, RefreshTokens, Quote, Comment, Reaction } from "@as/contracts";
+import { User, Quote, Reaction, Comment, RefreshTokens } from "@as/contracts";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -9,8 +9,8 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASS || "12345678",
   database: process.env.DB_NAME || "asdb",
   synchronize: false,
-  migrationsRun: false,
   logging: true,
-  entities: [User, RefreshTokens, Quote, Comment, Reaction],
-  migrations: ["./migrations/*.{ts,js}"],
+
+  entities: [User, Quote, Reaction, Comment, RefreshTokens],
+  migrations: [__dirname + "/migrations/*.{ts,js}"],
 });

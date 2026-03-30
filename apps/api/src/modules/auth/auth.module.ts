@@ -5,7 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { JwtStrategy } from '../../common/strategies/jwt.strategy';
-import { ConfigModule } from '../../config';
+import { AppConfigService, ConfigModule } from '../../config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
@@ -17,8 +17,12 @@ import { RefreshTokens } from '@as/contracts';
     ConfigModule,
     UserModule,
     TypeOrmModule.forFeature([RefreshTokens]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET ?? 'SUPER_SECRET',
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [AppConfigService],
+      useFactory: (config: AppConfigService) => ({
+        secret: config.jwtSecret,
+      }),
     }),
   ],
   controllers: [AuthController],

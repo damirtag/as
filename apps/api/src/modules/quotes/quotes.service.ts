@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Quote, User } from '@as/contracts';
+import { IPaginationInput, Quote, User } from '@as/contracts';
 import { BaseService } from '@as/base';
 import { QuoteRepository } from './quotes.repository';
 
@@ -17,6 +17,12 @@ export class QuoteService extends BaseService<Quote> {
     return this.quoteRepository.create({
       ...rest,
       ...(userId ? ({ userId, user: { id: userId } as User } as never) : {}),
+    });
+  }
+
+  async findByUserId(userId: string, pagination: IPaginationInput) {
+    return this.quoteRepository.findPaginated(pagination, {
+      where: { userId },
     });
   }
 }

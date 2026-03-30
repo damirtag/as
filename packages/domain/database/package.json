@@ -14,10 +14,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typeorm": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js",
-    "migration:create": "pnpm run typeorm -- migration:create",
-    "migration:generate": "pnpm run typeorm -- migration:generate -d ./ormconfig.ts",
-    "migration:run": "pnpm run typeorm -- migration:run -d ./ormconfig.ts",
-    "migration:revert": "pnpm run typeorm -- migration:revert -d ./ormconfig.ts"
+    "migration:create": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js migration:create",
+    "migration:generate": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js migration:generate -d ./src/ormconfig.ts ./src/migrations/migration",
+    "migration:run": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js migration:run -d ./src/ormconfig.ts",
+    "migration:revert": "cross-env TS_NODE_PROJECT=./tsconfig.migration.json node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js migration:revert -d ./src/ormconfig.ts"
   },
   "dependencies": {
     "@as/contracts": "workspace:*",

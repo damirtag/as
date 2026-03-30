@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Comment, Quote, Reaction, User } from '@as/contracts';
+import { Comment, IPaginationInput, Quote, Reaction, User } from '@as/contracts';
 import { BaseService } from '@as/base';
 import { ReactionRepository } from './reactions.repository';
 
@@ -7,6 +7,20 @@ import { ReactionRepository } from './reactions.repository';
 export class ReactionService extends BaseService<Reaction> {
   constructor(private readonly reactionRepository: ReactionRepository) {
     super(reactionRepository);
+  }
+
+  async getQuoteReactionsSummary(quoteId: string) {
+    return this.reactionRepository.getQuoteReactionsSummary(quoteId);
+  }
+
+  async findQuoteReactionsPaginated(
+    quoteId: string,
+    pagination: IPaginationInput,
+  ) {
+    return this.reactionRepository.findQuoteReactionsPaginated(
+      quoteId,
+      pagination,
+    );
   }
 
   override async create(

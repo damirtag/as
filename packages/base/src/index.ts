@@ -6,3 +6,4 @@ export * from "./pipes";
 export * from "./graphql/base-schema-config.service";
 export * from "./graphql/base.resolver";
 export * from "./graphql/base.types";
+export * from "./pagination.input";
