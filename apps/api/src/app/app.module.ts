@@ -7,6 +7,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 import { typeOrmConfig } from '@as/database';
 import { AllExceptionsFilter, LoggingInterceptor } from '@as/base';
+import { CacheClientModule } from '@as/cache-client';
 
 import {
   AuthModule,
@@ -17,7 +18,7 @@ import {
 } from '../modules';
 import { SchemaConfigModule } from '../modules/schema-config/schema-config.module';
 import { AppSchemaConfigService } from '../modules/schema-config/schema-config.service';
-import { AppConfigService } from '../config';
+import { AppConfigService } from '../config/app-config.service';
 import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
 
 @Module({
@@ -31,6 +32,15 @@ import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
       useExisting: AppSchemaConfigService,
     }),
 
+    CacheClientModule.forRoot({
+      host: process.env.REDIS_HOST!,
+      port: parseInt(process.env.REDIS_PORT!),
+      password: process.env.REDIS_PASSWORD,
+      db: parseInt(process.env.REDIS_DB ?? '0'),
+      keyPrefix: process.env.REDIS_KEY_PREFIX!,
+      ttl: parseInt(process.env.REDIS_TTL!),
+    }),
+
     AuthModule,
     UserModule,
     QuoteModule,
@@ -38,7 +48,6 @@ import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
     ReactionModule,
   ],
   providers: [
-    AppConfigService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: OwnerGuard },

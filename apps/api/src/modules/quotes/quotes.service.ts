@@ -25,4 +25,10 @@ export class QuoteService extends BaseService<Quote> {
       where: { userId },
     });
   }
+
+  async findByUsername(username: string, pagination: IPaginationInput) {
+    return this.quoteRepository.findPaginated(pagination, {
+      where: { user: { username } },
+    });
+  }
 }

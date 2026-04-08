@@ -81,4 +81,13 @@ export class QuotesResolver extends BaseResolver(
   ) {
     return this.quoteService.findByUserId(userId, pagination ?? {});
   }
+
+  @Query(() => PaginatedQuotes, { name: 'findQuotesByUsername' })
+  findByUsername(
+    @Args('username') username: string,
+    @Args('pagination', { type: () => PaginationInput, nullable: true })
+    pagination: PaginationInput | undefined,
+  ) {
+    return this.quoteService.findByUsername(username, pagination ?? {});
+  }
 }

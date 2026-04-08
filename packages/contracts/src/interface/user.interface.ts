@@ -5,6 +5,13 @@ export interface IUser extends ITimestampedEntity {
   username?: string;
 }
 
+export interface IUserResponse {
+  id: string;
+  email: string;
+  username?: string;
+  role?: string;
+}
+
 export interface IUserWithPassword extends IUser {
   passwordHash: string;
 }

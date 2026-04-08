@@ -34,7 +34,7 @@ export class AuthService {
         username: user.username,
         createdAt: user.createdAt,
       },
-      ...tokens,
+      tokens,
     };
   }
 
@@ -54,7 +54,7 @@ export class AuthService {
         username: user.username,
         createdAt: user.createdAt,
       },
-      ...tokens,
+      tokens,
     };
   }
 
@@ -123,7 +123,9 @@ export class AuthService {
       user,
     });
 
-    return { accessToken, refreshToken };
+    const result: ITokenPair = { accessToken, refreshToken };
+
+    return result;
   }
 
   private parseExpiresAt(ttl: string): Date {

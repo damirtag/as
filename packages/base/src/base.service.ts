@@ -69,30 +69,18 @@ export abstract class BaseService<T extends ObjectLiteral> {
     }
   }
 
-  async exists(where: FindOptionsWhere<T>): Promise<boolean> {
-    return this.repo.exists(where);
-  }
-
-  async ensureExists(
-    where: FindOptionsWhere<T>,
-    message?: string,
-  ): Promise<void> {
-    const exists = await this.repo.exists(where);
-    if (!exists) {
-      throw new NotFoundException(message ?? `${this.entityName()} not found`);
-    }
-  }
-
-  async ensureNotExists(
-    where: FindOptionsWhere<T>,
-    message?: string,
-  ): Promise<void> {
-    const exists = await this.repo.exists(where);
-    if (exists) {
-      throw new ConflictException(
-        message ?? `${this.entityName()} already exists`,
+  async restoreOrFail(id: string): Promise<void> {
+    await this.findByIdOrFail(id);
+    const restored = await this.repo.restore(id);
+    if (!restored) {
+      throw new NotFoundException(
+        `${this.entityName()} with ID ${id} not found or not deleted`,
       );
     }
+  }
+
+  async exists(where: FindOptionsWhere<T>): Promise<boolean> {
+    return this.repo.exists(where);
   }
 
   private entityName(): string {

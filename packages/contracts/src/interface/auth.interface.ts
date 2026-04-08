@@ -23,3 +23,13 @@ export interface IRefreshToken {
   userId: string;
   createdAt: Date;
 }
+
+export interface IAuthResponse {
+  user: {
+    id: string;
+    email: string;
+    username?: string;
+    role: Role;
+  };
+  tokens: ITokenPair;
+}

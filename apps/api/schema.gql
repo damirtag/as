@@ -118,6 +118,7 @@ type Query {
   findPaginatedReactionTypeGql(pagination: PaginationInput!): PaginatedReactionTypeGql!
   findPaginatedUserType(pagination: PaginationInput!): PaginatedUserType!
   findQuotesByUserId(pagination: PaginationInput, userId: ID!): PaginatedQuotes!
+  findQuotesByUsername(pagination: PaginationInput, username: String!): PaginatedQuotes!
 }
 
 type QuoteReactionsSummaryGql {

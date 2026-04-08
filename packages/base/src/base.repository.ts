@@ -64,7 +64,17 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
   }
 
   async delete(id: string): Promise<boolean> {
+    const result = await this.repo.softDelete(id);
+    return (result.affected ?? 0) > 0;
+  }
+
+  async hardDelete(id: string): Promise<boolean> {
     const result = await this.repo.delete(id);
+    return (result.affected ?? 0) > 0;
+  }
+
+  async restore(id: string): Promise<boolean> {
+    const result = await this.repo.restore(id);
     return (result.affected ?? 0) > 0;
   }
 

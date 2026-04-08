@@ -30,7 +30,7 @@ export class AppConfigService {
   }
 
   get dbPassword(): string {
-    return this.config.getOrThrow<string>('DB_PASSWORD');
+    return this.config.getOrThrow<string>('DB_PASS');
   }
 
   get dbName(): string {
@@ -47,6 +47,18 @@ export class AppConfigService {
 
   get redisPassword(): string | undefined {
     return this.config.get<string>('REDIS_PASS');
+  }
+
+  get redisDb(): number {
+    return this.config.get<number>('REDIS_DB', 0);
+  }
+
+  get redisKeyPrefix(): string {
+    return this.config.get<string>('REDIS_KEY_PREFIX', 'quoting:');
+  }
+
+  get redisTtl(): number {
+    return this.config.get<number>('REDIS_TTL', 3600);
   }
 
   get jwtSecret(): string {

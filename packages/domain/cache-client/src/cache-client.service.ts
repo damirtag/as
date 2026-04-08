@@ -5,7 +5,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import Redis from "ioredis";
-import { CacheClientOptions } from "./cache-client.options";
+import type { CacheClientOptions } from "./cache-client.options";
 
 @Injectable()
 export class CacheClientService implements OnModuleInit, OnModuleDestroy {
