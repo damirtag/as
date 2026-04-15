@@ -31,7 +31,7 @@ importers:
         version: link:../../packages/contracts
       '@as/database':
         specifier: workspace:*
-        version: link:../../packages/domain/database
+        version: link:../../packages/database
       '@nestjs/apollo':
         specifier: ^13.2.4
         version: 13.2.4(@apollo/server@5.5.0(graphql@16.13.2))(@apollo/subgraph@2.13.3(graphql@16.13.2))(@as-integrations/express5@1.1.2(@apollo/server@5.5.0(graphql@16.13.2))(express@5.2.1))(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17)(@nestjs/graphql@13.2.4(@apollo/subgraph@2.13.3(graphql@16.13.2))(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17)(class-transformer@0.5.1)(class-validator@0.14.4)(graphql@16.13.2)(reflect-metadata@0.2.2))(graphql@16.13.2)
@@ -315,30 +315,11 @@ importers:
         specifier: ^5.5.4
         version: 5.9.3
 
-  packages/domain/cache-client:
-    dependencies:
-      '@nestjs/common':
-        specifier: ^11.0.1
-        version: 11.1.17(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      ioredis:
-        specifier: ^5.3.0
-        version: 5.10.1
-      reflect-metadata:
-        specifier: ^0.1.14
-        version: 0.1.14
-    devDependencies:
-      '@types/node':
-        specifier: ^24.6.0
-        version: 24.12.0
-      typescript:
-        specifier: ^5.5.4
-        version: 5.9.3
-
-  packages/domain/database:
+  packages/database:
     dependencies:
       '@as/contracts':
         specifier: workspace:*
-        version: link:../../contracts
+        version: link:../contracts
       '@nestjs/typeorm':
         specifier: ^11.0.0
         version: 11.0.0(@nestjs/common@11.1.17(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28(ioredis@5.10.1)(pg@8.20.0)(ts-node@10.9.2(@types/node@25.5.0)(typescript@6.0.2)))
@@ -364,6 +345,25 @@ importers:
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
+
+  packages/domain/cache-client:
+    dependencies:
+      '@nestjs/common':
+        specifier: ^11.0.1
+        version: 11.1.17(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.1.14)(rxjs@7.8.2)
+      ioredis:
+        specifier: ^5.3.0
+        version: 5.10.1
+      reflect-metadata:
+        specifier: ^0.1.14
+        version: 0.1.14
+    devDependencies:
+      '@types/node':
+        specifier: ^24.6.0
+        version: 24.12.0
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
 
 packages:
 
