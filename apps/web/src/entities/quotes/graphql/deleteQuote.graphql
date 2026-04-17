@@ -1,0 +1,3 @@
+mutation DeleteQuote($id: ID!) {
+  deleteQuoteType(id: $id)
+}

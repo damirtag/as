@@ -1,0 +1,8 @@
+mutation CreateQuote($input: CreateQuoteInput!) {
+  createQuoteType(input: $input) {
+    id
+    text
+    createdAt
+    userId
+  }
+}

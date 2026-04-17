@@ -31,5 +31,5 @@ export interface IAuthResponse {
     username?: string;
     role: Role;
   };
-  tokens: ITokenPair;
+  accessToken: string;
 }

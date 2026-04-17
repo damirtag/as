@@ -2,7 +2,7 @@ import axios from "axios";
 import { setAccessToken } from "@/shared/auth/token-store";
 import type { IAuthResponse, LoginDto, RegisterDto } from "@as/contracts";
 
-const API_BASE_URL = import.meta.env.VITE_AUTH_URL || "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_AUTH_URL || "http://localhost:4000";
 
 // Ensure cookies are sent in requests
 const axiosInstance = axios.create({

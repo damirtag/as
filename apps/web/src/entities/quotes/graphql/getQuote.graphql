@@ -1,0 +1,16 @@
+query GetQuote($id: ID!) {
+  findOneQuoteType(id: $id) {
+    id
+    text
+    createdAt
+    userId
+
+    reactionsSummary {
+      totalCount
+      counts {
+        type
+        count
+      }
+    }
+  }
+}

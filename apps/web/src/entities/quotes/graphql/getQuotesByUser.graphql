@@ -1,0 +1,12 @@
+query GetQuotesByUser($userId: ID!, $pagination: PaginationInput) {
+  findQuotesByUserId(userId: $userId, pagination: $pagination) {
+    items {
+      id
+      text
+      createdAt
+    }
+    total
+    page
+    totalPages
+  }
+}

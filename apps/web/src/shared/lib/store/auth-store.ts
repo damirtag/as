@@ -1,20 +1,18 @@
 import { create } from "zustand";
 import { login, register, logout, refreshTokens } from "@/shared/lib/api/auth";
-import {
-  getAccessToken,
-  setAccessToken,
-  setRefreshToken,
-} from "@/shared/auth/token-store";
+import { setAccessToken, clearAccessToken } from "@/shared/auth/token-store";
 import type { IUserResponse as IUser } from "@as/contracts";
 
 interface AuthState {
   user: IUser | null;
   isAuthenticated: boolean;
+  isInitializing: boolean;
   isLoading: boolean;
   error: string | null;
 }
-
 interface AuthActions {
+  initAuth: () => Promise<void>;
+
   login: (email: string, password: string) => Promise<void>;
   register: (
     email: string,
@@ -22,8 +20,9 @@ interface AuthActions {
     username: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
+
   refreshToken: () => Promise<void>;
-  checkAuth: () => void;
+
   clearError: () => void;
 }
 
@@ -32,42 +31,68 @@ type AuthStore = AuthState & AuthActions;
 export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   isAuthenticated: false,
+  isInitializing: true,
   isLoading: false,
   error: null,
 
-  login: async (email: string, password: string) => {
-    set({ isLoading: true, error: null });
+  initAuth: async () => {
+    if (get().isAuthenticated) {
+      set({ isInitializing: false });
+      return;
+    }
+
+    set({ isInitializing: true });
+
     try {
-      const response = await login({ email, password });
+      const res = await refreshTokens();
+      setAccessToken(res.tokens.accessToken);
       set({
-        user: response.user || { id: "temp", email },
+        user: res.user ?? null,
         isAuthenticated: true,
-        isLoading: false,
       });
-    } catch (error: any) {
-      set({
-        error: error.response?.data?.message || "Login failed",
-        isLoading: false,
-      });
-      throw error;
+    } catch {
+      clearAccessToken();
+      set({ user: null, isAuthenticated: false });
+    } finally {
+      set({ isInitializing: false });
     }
   },
 
-  register: async (email: string, password: string, username: string) => {
+  login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await register({ email, password, username });
+      const res = await login({ email, password });
+      setAccessToken(res.tokens.accessToken);
       set({
-        user: response.user || { id: "temp", email, username },
+        user: res.user ?? null,
         isAuthenticated: true,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (err: any) {
       set({
-        error: error.response?.data?.message || "Registration failed",
+        error: err.response?.data?.message ?? "Login failed",
         isLoading: false,
       });
-      throw error;
+      throw err;
+    }
+  },
+
+  register: async (email, password, username) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await register({ email, password, username });
+      setAccessToken(res.tokens.accessToken);
+      set({
+        user: res.user ?? null,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+    } catch (err: any) {
+      set({
+        error: err.response?.data?.message ?? "Registration failed",
+        isLoading: false,
+      });
+      throw err;
     }
   },
 
@@ -75,14 +100,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isLoading: true });
     try {
       await logout();
-      set({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error: any) {
-      // Even if logout fails, clear local state
+    } finally {
+      clearAccessToken();
       set({
         user: null,
         isAuthenticated: false,
@@ -93,35 +112,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   refreshToken: async () => {
-    try {
-      const response = await refreshTokens();
-      set({
-        user: response.user || get().user,
-        isAuthenticated: true,
-      });
-    } catch (error) {
-      // If refresh fails, logout
-      set({
-        user: null,
-        isAuthenticated: false,
-        error: "Session expired",
-      });
-      setAccessToken(null);
-      setRefreshToken(null);
-    }
+    const res = await refreshTokens();
+    setAccessToken(res.tokens.accessToken);
+    set({
+      user: res.user ?? get().user,
+      isAuthenticated: true,
+    });
   },
 
-  checkAuth: () => {
-    const token = getAccessToken();
-    if (token) {
-      set({ isAuthenticated: true });
-      // Optionally, you could decode the token to get user info
-    } else {
-      set({ isAuthenticated: false, user: null });
-    }
-  },
-
-  clearError: () => {
-    set({ error: null });
-  },
+  clearError: () => set({ error: null }),
 }));

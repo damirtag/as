@@ -1,0 +1,9 @@
+query GetUser($id: ID!) {
+  findOneUserType(id: $id) {
+    id
+    username
+    name
+    role
+    createdAt
+  }
+}

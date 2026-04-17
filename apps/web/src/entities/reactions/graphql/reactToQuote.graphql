@@ -1,0 +1,8 @@
+mutation ReactToQuote($input: CreateReactionInput!) {
+  createReactionTypeGql(input: $input) {
+    id
+    type
+    quoteId
+    userId
+  }
+}

@@ -1,0 +1,15 @@
+query GetComments($quoteId: ID!, $pagination: PaginationInput) {
+  findOneQuoteType(id: $quoteId) {
+    commentsPaginated(pagination: $pagination) {
+      items {
+        id
+        text
+        userId
+        createdAt
+      }
+      total
+      page
+      totalPages
+    }
+  }
+}

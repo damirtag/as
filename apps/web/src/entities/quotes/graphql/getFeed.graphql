@@ -1,0 +1,21 @@
+query GetFeed($pagination: PaginationInput!) {
+  findPaginatedQuoteType(pagination: $pagination) {
+    items {
+      id
+      text
+      createdAt
+      userId
+
+      reactionsSummary {
+        totalCount
+        counts {
+          type
+          count
+        }
+      }
+    }
+    total
+    page
+    totalPages
+  }
+}

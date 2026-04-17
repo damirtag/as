@@ -1,0 +1,14 @@
+overwrite: true
+
+schema: "../api/schema.gql"
+
+documents: "src/**/*.graphql"
+
+generates:
+  src/shared/lib/api/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      scalars:
+        DateTime: string

@@ -1,0 +1,13 @@
+query GetUsers($pagination: PaginationInput!) {
+  findPaginatedUserType(pagination: $pagination) {
+    items {
+      id
+      username
+      role
+      createdAt
+    }
+    total
+    page
+    totalPages
+  }
+}

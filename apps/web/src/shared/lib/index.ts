@@ -1,2 +1,3 @@
-export * from "./api/auth";
+export * from "./api";
 export * from "./store/auth-store";
+export * from "./hooks";

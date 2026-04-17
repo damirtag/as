@@ -1,0 +1,3 @@
+mutation DeleteReaction($id: ID!) {
+  deleteReactionTypeGql(id: $id)
+}
