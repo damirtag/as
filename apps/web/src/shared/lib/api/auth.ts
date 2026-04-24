@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 
 export const login = async (dto: LoginDto): Promise<IAuthResponse> => {
   const response = await axiosInstance.post<IAuthResponse>("/auth/login", dto);
-  setAccessToken(response.data.tokens.accessToken); // store only access token
+  setAccessToken(response.data.accessToken); // store only access token
   return response.data;
 };
 
@@ -21,14 +21,14 @@ export const register = async (dto: RegisterDto): Promise<IAuthResponse> => {
     "/auth/register",
     dto,
   );
-  setAccessToken(response.data.tokens.accessToken);
+  setAccessToken(response.data.accessToken);
   return response.data;
 };
 
 export const refreshTokens = async (): Promise<IAuthResponse> => {
   // no need to get refresh token from JS
   const response = await axiosInstance.post<IAuthResponse>("/auth/refresh");
-  setAccessToken(response.data.tokens.accessToken);
+  setAccessToken(response.data.accessToken);
   return response.data;
 };
 

@@ -6,8 +6,6 @@
 
     "types": ["node"],
 
-    "ignoreDeprecations": "6.0",
-
     "paths": {
       "@as/contracts": ["../../../contracts/dist"]
     }

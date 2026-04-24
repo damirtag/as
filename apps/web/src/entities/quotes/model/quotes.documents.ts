@@ -11,6 +11,9 @@ export const GET_FEED = gql`
         text
         createdAt
         userId
+        user {
+          username
+        }
         reactionsSummary {
           totalCount
           counts {
@@ -71,6 +74,9 @@ export const GET_QUOTES_BY_USER = gql`
         id
         text
         createdAt
+        user {
+          username
+        }
       }
     }
   }

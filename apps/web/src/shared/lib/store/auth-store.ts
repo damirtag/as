@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     try {
       const res = await refreshTokens();
-      setAccessToken(res.tokens.accessToken);
+      setAccessToken(res.accessToken);
       set({
         user: res.user ?? null,
         isAuthenticated: true,
@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await login({ email, password });
-      setAccessToken(res.tokens.accessToken);
+      setAccessToken(res.accessToken);
       set({
         user: res.user ?? null,
         isAuthenticated: true,
@@ -81,7 +81,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await register({ email, password, username });
-      setAccessToken(res.tokens.accessToken);
+      setAccessToken(res.accessToken);
       set({
         user: res.user ?? null,
         isAuthenticated: true,
@@ -113,7 +113,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   refreshToken: async () => {
     const res = await refreshTokens();
-    setAccessToken(res.tokens.accessToken);
+    setAccessToken(res.accessToken);
     set({
       user: res.user ?? get().user,
       isAuthenticated: true,

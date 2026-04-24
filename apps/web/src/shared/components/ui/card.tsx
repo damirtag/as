@@ -5,20 +5,20 @@ interface QuoteCardProps {
     id: string;
     text: string;
     createdAt: string;
-    user: {
-      username: string;
-      avatarColor?: string;
-    };
     reactionsSummary?: {
       totalCount: number;
     };
+  };
+  user?: {
+    username: string;
+    avatarColor?: string;
   };
   currentUserId?: string;
   onClick?: () => void;
   className?: string;
 }
 
-export function QuoteCard({ quote, onClick, className }: QuoteCardProps) {
+export function QuoteCard({ quote, user, onClick, className }: QuoteCardProps) {
   return (
     <div
       onClick={onClick}
@@ -33,11 +33,11 @@ export function QuoteCard({ quote, onClick, className }: QuoteCardProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center text-black font-bold text-[10px] uppercase shadow-[0_0_10px_rgba(250,204,21,0.2)]">
-            {quote.user.username[0]}
+            {user?.username[0] ?? "?"}
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-medium text-zinc-100 group-hover:text-yellow-400 transition-colors">
-              {quote.user.username}
+              {user?.username ?? "Unknown"}
             </span>
             <span className="text-[10px] text-zinc-500 uppercase tracking-wider">
               {new Date(quote.createdAt).toLocaleDateString()}

@@ -3,7 +3,7 @@ import { AlertCircle } from "lucide-react";
 
 export interface FormFieldProps {
   label?: string;
-  error?: string;
+  error?: string | null;
   hint?: string;
   required?: boolean;
   className?: string;
@@ -38,7 +38,7 @@ export function FormField({
 }
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  error?: string;
+  error?: string | null;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 };

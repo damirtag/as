@@ -36,7 +36,7 @@ export const errorLink = new ErrorLink(({ error, operation, forward }) => {
 
       refreshTokens()
         .then((res) => {
-          setAccessToken(res.tokens.accessToken);
+          setAccessToken(res.accessToken);
           resolvePendingRequests();
           retryRequest();
         })
