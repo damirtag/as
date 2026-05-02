@@ -9,7 +9,7 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASS || "12345678",
   database: process.env.DB_NAME || "asdb",
   synchronize: false,
-  logging: true,
+  logging: false,
 
   entities: [User, Quote, Reaction, Comment, RefreshTokens],
   migrations: [__dirname + "/migrations/*.{ts,js}"],

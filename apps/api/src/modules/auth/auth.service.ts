@@ -85,7 +85,17 @@ export class AuthService {
       { expiresIn: this.appConfig.jwtAccessTtl as JwtSignOptions['expiresIn'] },
     );
 
-    return { accessToken };
+    return { 
+      user: 
+        { 
+          id: user.id, 
+          email: user.email, 
+          username: user.username, 
+          createdAt: user.createdAt, 
+          updatedAt: user.updatedAt 
+        }, 
+      accessToken 
+    };
   }
 
   async logout(refreshToken: string): Promise<void> {

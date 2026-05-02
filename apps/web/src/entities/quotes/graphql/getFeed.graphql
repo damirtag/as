@@ -6,6 +6,18 @@ query GetFeed($pagination: PaginationInput!) {
       createdAt
       userId
 
+      user {
+        id
+        createdAt
+        updatedAt
+        name
+        username
+      }
+
+      commentsSummary {
+        totalCount
+      }
+
       reactionsSummary {
         totalCount
         counts {
@@ -13,6 +25,8 @@ query GetFeed($pagination: PaginationInput!) {
           count
         }
       }
+
+
     }
     total
     page

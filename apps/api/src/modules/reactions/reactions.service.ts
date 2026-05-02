@@ -9,6 +9,7 @@ import {
 import { BaseService } from '@as/base';
 import { CacheClientService } from '@as/cache-client';
 import { ReactionRepository } from './reactions.repository';
+import { reviveDates } from '@/utils';
 
 @Injectable()
 export class ReactionService extends BaseService<Reaction> {
@@ -23,7 +24,8 @@ export class ReactionService extends BaseService<Reaction> {
     const cacheKey = `quote:reactions:summary:${quoteId}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      return cached;
+      console.log('Cache hit for quote reactions summary');
+      return reviveDates(cached);
     }
     const summary =
       await this.reactionRepository.getQuoteReactionsSummary(quoteId);
@@ -40,7 +42,8 @@ export class ReactionService extends BaseService<Reaction> {
     const cacheKey = `quote:reactions:paginated:${quoteId}:${page}:${limit}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      return cached;
+      console.log('Cache hit for quote reactions paginated');
+      return reviveDates(cached);
     }
     const result = await this.reactionRepository.findQuoteReactionsPaginated(
       quoteId,

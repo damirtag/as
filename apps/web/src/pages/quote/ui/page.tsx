@@ -66,6 +66,7 @@ export default function QuotePage() {
         {/* Quote */}
         <QuoteCard
           quote={quote}
+          user={quote.user}
           currentUserId={user?.id}
           className="cursor-default hover:border-zinc-800 hover:bg-black"
         />

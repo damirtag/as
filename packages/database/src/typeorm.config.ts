@@ -10,7 +10,7 @@ export const typeOrmConfig = (): TypeOrmModuleOptions => ({
   database: process.env.DB_NAME ?? "asdb",
 
   synchronize: false,
-  logging: true,
+  logging: false,
   migrationsRun: false,
 
   entities: [User, RefreshTokens, Quote, Comment, Reaction],

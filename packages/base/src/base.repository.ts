@@ -47,6 +47,10 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
     return this.repo.findOne({ where });
   }
 
+  async findOneWithOptions(options: FindManyOptions<T>): Promise<T | null> {
+    return this.repo.findOne(options);
+  }
+
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repo.create(data);
     const saved = await this.repo.save(entity);

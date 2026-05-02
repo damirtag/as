@@ -5,6 +5,29 @@ query GetQuote($id: ID!) {
     createdAt
     userId
 
+    user {
+      id
+      createdAt
+      updatedAt
+      name
+      username
+    }
+
+    commentsSummary {
+      totalCount
+    }
+
+    commentsPaginated {
+      items {
+        id
+        text
+        userId
+        quoteId
+        createdAt
+        updatedAt
+      }
+    }
+
     reactionsSummary {
       totalCount
       counts {

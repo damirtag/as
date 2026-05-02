@@ -108,6 +108,7 @@ input PaginationInput {
 }
 
 type Query {
+  findByUsername(username: String!): UserType!
   findCommentsByUserId(pagination: PaginationInput, userId: ID!): PaginatedComments!
   findOneCommentType(id: ID!): CommentType!
   findOneQuoteType(id: ID!): QuoteType!
@@ -121,6 +122,10 @@ type Query {
   findQuotesByUsername(pagination: PaginationInput, username: String!): PaginatedQuotes!
 }
 
+type QuoteCommentsSummaryGql {
+  totalCount: Int!
+}
+
 type QuoteReactionsSummaryGql {
   counts: [ReactionCountByTypeGql!]!
   totalCount: Int!
@@ -128,12 +133,14 @@ type QuoteReactionsSummaryGql {
 
 type QuoteType {
   commentsPaginated(pagination: PaginationInput): PaginatedComments!
+  commentsSummary: QuoteCommentsSummaryGql!
   createdAt: DateTime!
   id: ID!
   reactionsPaginated(includeUsers: Boolean! = false, pagination: PaginationInput): PaginatedReactions
   reactionsSummary: QuoteReactionsSummaryGql!
   text: String!
   updatedAt: DateTime!
+  user: UserType
   userId: ID!
 }
 

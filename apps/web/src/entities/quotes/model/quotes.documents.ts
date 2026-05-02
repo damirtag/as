@@ -12,8 +12,18 @@ export const GET_FEED = gql`
         createdAt
         userId
         user {
+          id
+          email
+          createdAt
+          updatedAt
+          name
           username
         }
+
+        commentsSummary {
+          totalCount
+        }
+
         reactionsSummary {
           totalCount
           counts {
@@ -43,6 +53,18 @@ export const GET_QUOTE = gql`
       text
       createdAt
       userId
+
+      user {
+        id
+        createdAt
+        updatedAt
+        name
+        username
+      }
+      commentsSummary {
+        totalCount
+      }
+
       reactionsSummary {
         totalCount
         counts {

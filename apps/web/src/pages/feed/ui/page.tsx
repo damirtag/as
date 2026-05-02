@@ -99,6 +99,7 @@ export default function FeedPage() {
             <QuoteCard
               key={quote.id}
               quote={quote}
+              user={quote.user}
               currentUserId={user?.id}
               onClick={() => navigate(`/q/${quote.id}`)}
             />

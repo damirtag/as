@@ -13,6 +13,11 @@ export class CommentRepository extends BaseRepository<Comment> {
     super(commentRepository);
   }
 
+  async getQuoteCommentsSummary(quoteId: string) {
+    const total = await this.commentRepository.count({ where: { quoteId } });
+    return { totalCount: total };
+  }
+
   async findCommentsPaginatedByQuoteId(
     quoteId: string,
     pagination: IPaginationInput,

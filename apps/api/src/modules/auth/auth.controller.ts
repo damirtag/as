@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto, LogoutDto, RefreshDto } from '@as/contracts';
@@ -37,7 +37,7 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
-  refresh(@Body() req: Request) {
+  refresh(@Req() req: Request) {
     const refreshToken = req.cookies.refreshToken;
 
     return this.authService.refreshAccessToken(refreshToken);

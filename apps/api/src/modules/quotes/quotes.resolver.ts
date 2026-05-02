@@ -14,8 +14,10 @@ import {
   PaginatedReactions,
   PaginationInput,
   QuoteReactionsSummaryGql,
+  QuoteCommentsSummaryGql,
   QuoteType,
   UpdateQuoteInput,
+  UserType,
 } from '@as/base';
 import { BaseResolver } from '@as/base';
 import { Quote } from '@as/contracts';
@@ -37,6 +39,16 @@ export class QuotesResolver extends BaseResolver(
     private readonly commentService: CommentService,
   ) {
     super(quoteService);
+  }
+
+  @ResolveField(() => UserType, { nullable: true })
+  async user(@Parent() quote: Quote) {
+    return quote.user || null;
+  }
+  
+  @ResolveField(() => QuoteCommentsSummaryGql)
+  async commentsSummary(@Parent() quote: Quote) {
+    return this.commentService.getQuoteCommentsSummary(quote.id);
   }
 
   @ResolveField(() => QuoteReactionsSummaryGql)
@@ -90,5 +102,10 @@ export class QuotesResolver extends BaseResolver(
     pagination: PaginationInput | undefined,
   ) {
     return this.quoteService.findByUsername(username, pagination ?? {});
+  }
+
+  @Query(() => QuoteType, { name: 'findOneQuoteType' })
+  override findOne(@Args('id', { type: () => ID }) id: string): Promise<Quote> {
+    return this.quoteService.findByIdWithUser(id);
   }
 }

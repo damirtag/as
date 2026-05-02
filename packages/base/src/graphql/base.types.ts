@@ -171,6 +171,12 @@ export class ReactionTypeGql {
 }
 
 @ObjectType()
+export class QuoteCommentsSummaryGql {
+  @Field(() => Int)
+  totalCount!: number;
+}
+
+@ObjectType()
 export class ReactionCountByTypeGql {
   @Field(() => ReactionType)
   type!: ReactionType;
@@ -204,6 +210,9 @@ export class QuoteType {
 
   @Field()
   updatedAt!: Date;
+
+  @Field(() => UserType, { nullable: true })
+  user?: UserType;
 
   /**
    * Агрегированные реакции на цитату (реакции к comment не включаем).

@@ -7,12 +7,11 @@ import { QuoteCard } from "@/shared/components";
 import Button from "@/shared/components/ui/button";
 
 export default function UserPage() {
-  const { userId } = useParams<{ userId: string }>();
+  const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuthStore();
 
-  // TODO: Implement user fetching hook
-  const { user } = useUser(userId ?? "");
+  const { user } = useUser(username ?? "");
   const { quotes, loading } = useQuoteByUserId(user?.id ?? "");
 
   if (loading) {
@@ -64,7 +63,7 @@ export default function UserPage() {
             </div>
             <div className="flex-1 space-y-2">
               <div>
-                <h1 className="text-xl font-bold text-zinc-100">{user.username}</h1>
+                <h1 className="text-xl font-bold text-zinc-100">{user.name ?? user.username}</h1>
                 <p className="text-zinc-500 text-sm">@{user.username.toLowerCase()}</p>
               </div>
 

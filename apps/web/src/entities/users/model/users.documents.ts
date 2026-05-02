@@ -1,13 +1,14 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER = gql`
-  query GetUser($id: ID!) {
-    findOneUserType(id: $id) {
+  query GetUser($username: String!) {
+    findByUsername(username: $username) {
       id
       username
       name
       role
       createdAt
+      updatedAt
     }
   }
 `;

@@ -36,6 +36,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   error: null,
 
   initAuth: async () => {
+    if (!get().isInitializing) return;
+
     if (get().isAuthenticated) {
       set({ isInitializing: false });
       return;

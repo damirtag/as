@@ -8,11 +8,13 @@ interface QuoteCardProps {
     reactionsSummary?: {
       totalCount: number;
     };
+    commentsSummary?: {
+      totalCount: number;
+    }
   };
   user?: {
     username: string;
-    avatarColor?: string;
-  };
+  } | null;
   currentUserId?: string;
   onClick?: () => void;
   className?: string;
@@ -77,7 +79,9 @@ export function QuoteCard({ quote, user, onClick, className }: QuoteCardProps) {
           {/* TODO: Implement real comments data*/}
           <div className="flex items-center gap-1.5 text-zinc-500 hover:text-blue-400 transition-colors">
             <MessageCircle size={14} />
-            <span className="text-xs font-medium">12</span>
+            <span className="text-xs font-medium">
+              {quote.commentsSummary?.totalCount || 0}
+            </span>
           </div>
         </div>
 
