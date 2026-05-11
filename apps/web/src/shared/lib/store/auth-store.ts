@@ -17,6 +17,7 @@ interface AuthActions {
   register: (
     email: string,
     password: string,
+    confirmPassword: string,
     username: string,
   ) => Promise<void>;
   logout: () => Promise<void>;
@@ -79,10 +80,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
 
-  register: async (email, password, username) => {
+  register: async (email, password, confirmPassword, username) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await register({ email, password, username });
+      const res = await register({ email, password, confirmPassword, username });
       setAccessToken(res.accessToken);
       set({
         user: res.user ?? null,

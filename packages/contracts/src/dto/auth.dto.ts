@@ -4,6 +4,7 @@ import {
   IsString,
   MinLength,
   MaxLength,
+  IsISO31661Alpha3,
 } from "class-validator";
 
 export class RegisterDto {
@@ -14,6 +15,11 @@ export class RegisterDto {
   @MinLength(6, { message: "Пароль должен быть не менее 6 символов" })
   @MaxLength(100, { message: "Пароль слишком длинный" })
   password!: string;
+
+  @IsString()
+  @MinLength(6, { message: "Пароль должен быть не менее 6 символов" })
+  @MaxLength(100, { message: "Пароль слишком длинный" })
+  confirmPassword!: string;
 
   @IsString()
   @MinLength(3, { message: "Юзернейм должен быть не менее 3 символов" })

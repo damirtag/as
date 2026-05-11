@@ -21,6 +21,10 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    if (dto.password !== dto.confirmPassword) {
+      throw new BadRequestException("Passwords do not match")
+    }
+
     await this.ensureEmailFree(dto.email);
     const passwordHash = await bcrypt.hash(dto.password, 10);
 

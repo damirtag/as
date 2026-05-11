@@ -43,7 +43,7 @@ export default function RegisterPage() {
     }
 
     try {
-      await register(email.trim(), password, username.trim());
+      await register(email.trim(), password, confirmPassword, username.trim());
       toast.success({ title: "Account created successfully!" });
       navigate("/feed", { replace: true });
     } catch (err) {
