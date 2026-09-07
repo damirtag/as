@@ -12,6 +12,9 @@ export const GET_COMMENTS = gql`
           text
           userId
           createdAt
+          user {
+            username
+          }
         }
       }
     }

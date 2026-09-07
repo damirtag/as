@@ -3,7 +3,6 @@ import { IPaginationInput, Quote, User } from '@as/contracts';
 import { BaseService } from '@as/base';
 import { QuoteRepository } from './quotes.repository';
 import { CacheClientService } from '@as/cache-client';
-import { reviveDates } from '@/utils';
 
 
 @Injectable()
@@ -16,6 +15,7 @@ export class QuoteService extends BaseService<Quote> {
     // todo: cache this
     return this.quoteRepository.findPaginated(pagination, {
       relations: ['user'],
+      order: { createdAt: 'DESC' },
     });
   }
 

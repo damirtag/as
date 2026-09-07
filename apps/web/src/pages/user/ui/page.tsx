@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/shared/lib";
+import { usePresenceStatus } from "@/shared/lib/presence";
 import { useUser } from "@/entities/users/model/useUser";
 import { useQuoteByUserId } from "@/entities/quotes/model/useQuoteByUser";
 import { QuoteCard } from "@/shared/components";
@@ -13,6 +14,7 @@ export default function UserPage() {
 
   const { user } = useUser(username ?? "");
   const { quotes, loading } = useQuoteByUserId(user?.id ?? "");
+  const liveStatus = usePresenceStatus(user?.id ?? "");
 
   if (loading) {
     return (
@@ -37,6 +39,8 @@ export default function UserPage() {
   }
 
   const isOwnProfile = currentUser?.username === user?.username;
+  const isOnline = liveStatus?.isOnline ?? user.isOnline;
+  const lastSeenAt = liveStatus?.lastSeenAt ?? user.lastSeenAt;
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -89,7 +93,21 @@ export default function UserPage() {
               <div className="flex items-center gap-4 text-xs text-zinc-500">
                 <div className="flex items-center gap-1">
                   <Calendar size={12} />
-                  <span>Joined {new Date(user.createdAt || Date.now()).toLocaleDateString()}</span>
+                  <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      isOnline ? "bg-emerald-400" : "bg-zinc-600"
+                    }`}
+                  />
+                  <span>
+                    {isOnline
+                      ? "Online"
+                      : lastSeenAt
+                        ? `Last seen ${new Date(lastSeenAt).toLocaleString()}`
+                        : "Offline"}
+                  </span>
                 </div>
               </div>
             </div>

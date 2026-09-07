@@ -25,6 +25,9 @@ query GetQuote($id: ID!) {
         quoteId
         createdAt
         updatedAt
+        user {
+          username
+        }
       }
     }
 
@@ -33,6 +36,13 @@ query GetQuote($id: ID!) {
       counts {
         type
         count
+      }
+    }
+    reactionsPaginated(includeUsers: true) {
+      items {
+        id
+        type
+        userId
       }
     }
   }

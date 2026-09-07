@@ -31,6 +31,13 @@ export const GET_FEED = gql`
             count
           }
         }
+        reactionsPaginated(includeUsers: true) {
+          items {
+            id
+            type
+            userId
+          }
+        }
         commentsPaginated {
           items {
             createdAt
@@ -39,6 +46,9 @@ export const GET_FEED = gql`
             text
             updatedAt
             userId
+            user {
+              username
+            }
           }
         }
       }
@@ -72,6 +82,13 @@ export const GET_QUOTE = gql`
           count
         }
       }
+      reactionsPaginated(includeUsers: true) {
+        items {
+          id
+          type
+          userId
+        }
+      }
       commentsPaginated {
         items {
           createdAt
@@ -80,6 +97,9 @@ export const GET_QUOTE = gql`
           text
           updatedAt
           userId
+          user {
+            username
+          }
         }
       }
     }

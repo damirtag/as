@@ -15,10 +15,10 @@ export class CommentService extends BaseService<Comment> {
   }
 
   async getQuoteCommentsSummary(quoteId: string) {
-    const cacheKey = `quote:comments:summary:${quoteId}`;
+    const cacheKey = `quote:comments:v2:summary:${quoteId}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      console.log('Cache hit for quote comments summary');
+      // console.log('Cache hit for quote comments summary');
       return reviveDates(cached);
     }
     const summary = await this.commentRepository.getQuoteCommentsSummary(quoteId);
@@ -31,10 +31,10 @@ export class CommentService extends BaseService<Comment> {
     quoteId: string,
     pagination: IPaginationInput,
   ) {
-    const cacheKey = `quote:comments:paginated:${quoteId}:${pagination.page ?? 1}:${pagination.limit ?? 20}`;
+    const cacheKey = `quote:comments:v2:paginated:${quoteId}:${pagination.page ?? 1}:${pagination.limit ?? 20}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      console.log('Cache hit for quote comments paginated');
+      // console.log('Cache hit for quote comments paginated');
       return reviveDates(cached);
     }
     const result = await this.commentRepository.findCommentsPaginatedByQuoteId(
@@ -50,18 +50,31 @@ export class CommentService extends BaseService<Comment> {
   ): Promise<Comment> {
     const { userId, quoteId, ...rest } = data;
 
-    return this.commentRepository.create({
+    const comment = await this.commentRepository.create({
       ...rest,
       ...(userId ? ({ userId, user: { id: userId } as User } as never) : {}),
       ...(quoteId
         ? ({ quoteId, quote: { id: quoteId } as Quote } as never)
         : {}),
     });
+
+    if (quoteId) {
+      await this.invalidateQuoteCommentsCache(quoteId);
+    }
+
+    return comment;
   }
 
   async findByUserId(userId: string, pagination: IPaginationInput) {
     return this.commentRepository.findPaginated(pagination, {
       where: { userId },
     });
+  }
+
+  private async invalidateQuoteCommentsCache(quoteId: string): Promise<void> {
+    await Promise.all([
+      this.cacheClient.del(`quote:comments:v2:summary:${quoteId}`),
+      this.cacheClient.delByPattern(`quote:comments:v2:paginated:${quoteId}:*`),
+    ]);
   }
 }

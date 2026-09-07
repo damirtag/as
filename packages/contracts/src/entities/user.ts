@@ -39,6 +39,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Column({ type: "timestamptz", nullable: true })
+  lastSeenAt?: Date;
+
   @OneToMany(() => Quote, (quote) => quote.user)
   quotes!: Quote[];
 

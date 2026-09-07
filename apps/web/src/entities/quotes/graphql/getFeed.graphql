@@ -25,6 +25,13 @@ query GetFeed($pagination: PaginationInput!) {
           count
         }
       }
+      reactionsPaginated(includeUsers: true) {
+        items {
+          id
+          type
+          userId
+        }
+      }
 
 
     }

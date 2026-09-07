@@ -16,7 +16,7 @@ export function useQuoteReaction() {
     quoteId: string,
     userId: string,
     type: ReactionType,
-    refetch?: any,
+    refetch?: string[],
   ) => {
     return reactToQuote({
       variables: {

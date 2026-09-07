@@ -15,14 +15,18 @@ export class UserService extends BaseService<User> {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    const cacheKey = `user:username:${username}`;
-    const cached: User | null = await this.cacheClient.get(cacheKey);
-    if (cached) {
-      console.log('Cache hit for user by username');
-      return reviveDates(cached);
-    }
+    // const cacheKey = `user:username:${username}`;
+    // const cached: User | null = await this.cacheClient.get(cacheKey);
+    // if (cached) {
+    //   // console.log('Cache hit for user by username');
+    //   return reviveDates(cached);
+    // }
     const user = await this.userRepository.findByUsername(username);
-    await this.cacheClient.set(cacheKey, user);
+    // await this.cacheClient.set(cacheKey, user);
     return user;
+  }
+
+  async markLastSeen(userId: string, lastSeenAt: Date): Promise<void> {
+    await this.userRepository.update(userId, { lastSeenAt });
   }
 }

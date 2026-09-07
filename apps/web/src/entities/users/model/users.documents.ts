@@ -9,6 +9,8 @@ export const GET_USER = gql`
       role
       createdAt
       updatedAt
+      isOnline
+      lastSeenAt
     }
   }
 `;
@@ -24,6 +26,8 @@ export const GET_USERS = gql`
         username
         role
         createdAt
+        isOnline
+        lastSeenAt
       }
     }
   }

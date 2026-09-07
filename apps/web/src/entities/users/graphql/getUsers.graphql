@@ -5,6 +5,8 @@ query GetUsers($pagination: PaginationInput!) {
       username
       role
       createdAt
+      isOnline
+      lastSeenAt
     }
     total
     page

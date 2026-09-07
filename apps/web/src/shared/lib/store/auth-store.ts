@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { login, register, logout, refreshTokens } from "@/shared/lib/api/auth";
 import { setAccessToken, clearAccessToken } from "@/shared/auth/token-store";
+import {
+  scheduleProactiveRefresh,
+  clearScheduledRefresh,
+} from "@/shared/auth/refresh-scheduler";
 import type { IUserResponse as IUser } from "@as/contracts";
 
 interface AuthState {
@@ -49,12 +53,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       const res = await refreshTokens();
       setAccessToken(res.accessToken);
+      scheduleProactiveRefresh();
       set({
         user: res.user ?? null,
         isAuthenticated: true,
       });
     } catch {
       clearAccessToken();
+      clearScheduledRefresh();
       set({ user: null, isAuthenticated: false });
     } finally {
       set({ isInitializing: false });
@@ -66,6 +72,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       const res = await login({ email, password });
       setAccessToken(res.accessToken);
+      scheduleProactiveRefresh();
       set({
         user: res.user ?? null,
         isAuthenticated: true,
@@ -85,6 +92,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       const res = await register({ email, password, confirmPassword, username });
       setAccessToken(res.accessToken);
+      scheduleProactiveRefresh();
       set({
         user: res.user ?? null,
         isAuthenticated: true,
@@ -105,6 +113,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       await logout();
     } finally {
       clearAccessToken();
+      clearScheduledRefresh();
       set({
         user: null,
         isAuthenticated: false,
@@ -117,6 +126,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   refreshToken: async () => {
     const res = await refreshTokens();
     setAccessToken(res.accessToken);
+    scheduleProactiveRefresh();
     set({
       user: res.user ?? get().user,
       isAuthenticated: true,

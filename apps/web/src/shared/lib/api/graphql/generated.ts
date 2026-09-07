@@ -23,6 +23,7 @@ export type CommentType = {
   quoteId: Scalars['ID']['output'];
   text: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<UserType>;
   userId: Scalars['ID']['output'];
 };
 
@@ -337,6 +338,8 @@ export type UserType = {
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  isOnline: Scalars['Boolean']['output'];
+  lastSeenAt?: Maybe<Scalars['DateTime']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   role: Role;
   updatedAt: Scalars['DateTime']['output'];
@@ -363,7 +366,7 @@ export type GetCommentsQueryVariables = Exact<{
 }>;
 
 
-export type GetCommentsQuery = { __typename?: 'Query', findOneQuoteType: { __typename?: 'QuoteType', commentsPaginated: { __typename?: 'PaginatedComments', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'CommentType', id: string, text: string, userId: string, createdAt: string }> } } };
+export type GetCommentsQuery = { __typename?: 'Query', findOneQuoteType: { __typename?: 'QuoteType', commentsPaginated: { __typename?: 'PaginatedComments', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'CommentType', id: string, text: string, userId: string, createdAt: string, user?: { __typename?: 'UserType', username: string } | null }> } } };
 
 export type CreateQuoteMutationVariables = Exact<{
   input: CreateQuoteInput;
@@ -384,14 +387,14 @@ export type GetFeedQueryVariables = Exact<{
 }>;
 
 
-export type GetFeedQuery = { __typename?: 'Query', findPaginatedQuoteType: { __typename?: 'PaginatedQuoteType', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'QuoteType', id: string, text: string, createdAt: string, userId: string, user?: { __typename?: 'UserType', id: string, createdAt: string, updatedAt: string, name?: string | null, username: string } | null, commentsSummary: { __typename?: 'QuoteCommentsSummaryGql', totalCount: number }, reactionsSummary: { __typename?: 'QuoteReactionsSummaryGql', totalCount: number, counts: Array<{ __typename?: 'ReactionCountByTypeGql', type: ReactionType, count: number }> } }> } };
+export type GetFeedQuery = { __typename?: 'Query', findPaginatedQuoteType: { __typename?: 'PaginatedQuoteType', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'QuoteType', id: string, text: string, createdAt: string, userId: string, user?: { __typename?: 'UserType', id: string, createdAt: string, updatedAt: string, name?: string | null, username: string } | null, commentsSummary: { __typename?: 'QuoteCommentsSummaryGql', totalCount: number }, reactionsSummary: { __typename?: 'QuoteReactionsSummaryGql', totalCount: number, counts: Array<{ __typename?: 'ReactionCountByTypeGql', type: ReactionType, count: number }> }, reactionsPaginated?: { __typename?: 'PaginatedReactions', items: Array<{ __typename?: 'ReactionTypeGql', id: string, type: ReactionType, userId: string }> } | null }> } };
 
 export type GetQuoteQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetQuoteQuery = { __typename?: 'Query', findOneQuoteType: { __typename?: 'QuoteType', id: string, text: string, createdAt: string, userId: string, user?: { __typename?: 'UserType', id: string, createdAt: string, updatedAt: string, name?: string | null, username: string } | null, commentsSummary: { __typename?: 'QuoteCommentsSummaryGql', totalCount: number }, commentsPaginated: { __typename?: 'PaginatedComments', items: Array<{ __typename?: 'CommentType', id: string, text: string, userId: string, quoteId: string, createdAt: string, updatedAt: string }> }, reactionsSummary: { __typename?: 'QuoteReactionsSummaryGql', totalCount: number, counts: Array<{ __typename?: 'ReactionCountByTypeGql', type: ReactionType, count: number }> } } };
+export type GetQuoteQuery = { __typename?: 'Query', findOneQuoteType: { __typename?: 'QuoteType', id: string, text: string, createdAt: string, userId: string, user?: { __typename?: 'UserType', id: string, createdAt: string, updatedAt: string, name?: string | null, username: string } | null, commentsSummary: { __typename?: 'QuoteCommentsSummaryGql', totalCount: number }, commentsPaginated: { __typename?: 'PaginatedComments', items: Array<{ __typename?: 'CommentType', id: string, text: string, userId: string, quoteId: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', username: string } | null }> }, reactionsSummary: { __typename?: 'QuoteReactionsSummaryGql', totalCount: number, counts: Array<{ __typename?: 'ReactionCountByTypeGql', type: ReactionType, count: number }> }, reactionsPaginated?: { __typename?: 'PaginatedReactions', items: Array<{ __typename?: 'ReactionTypeGql', id: string, type: ReactionType, userId: string }> } | null } };
 
 export type GetQuotesByUserQueryVariables = Exact<{
   userId: Scalars['ID']['input'];
@@ -420,11 +423,11 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', findByUsername: { __typename?: 'UserType', id: string, username: string, name?: string | null, role: Role, createdAt: string, updatedAt: string } };
+export type GetUserQuery = { __typename?: 'Query', findByUsername: { __typename?: 'UserType', id: string, username: string, name?: string | null, role: Role, createdAt: string, updatedAt: string, isOnline: boolean, lastSeenAt?: string | null } };
 
 export type GetUsersQueryVariables = Exact<{
   pagination: PaginationInput;
 }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', findPaginatedUserType: { __typename?: 'PaginatedUserType', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'UserType', id: string, username: string, role: Role, createdAt: string }> } };
+export type GetUsersQuery = { __typename?: 'Query', findPaginatedUserType: { __typename?: 'PaginatedUserType', total: number, page: number, totalPages: number, items: Array<{ __typename?: 'UserType', id: string, username: string, role: Role, createdAt: string, isOnline: boolean, lastSeenAt?: string | null }> } };

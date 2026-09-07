@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { IPaginationInput, IPaginatedResult, Reaction, ReactionType } from '@as/contracts';
 import { BaseRepository } from '@as/base';
 
@@ -11,6 +11,16 @@ export class ReactionRepository extends BaseRepository<Reaction> {
     private readonly reactionRepository: Repository<Reaction>,
   ) {
     super(reactionRepository);
+  }
+
+  async findQuoteReactionByUserAndType(
+    userId: string,
+    quoteId: string,
+    type: ReactionType,
+  ): Promise<Reaction | null> {
+    return this.repo.findOne({
+      where: { userId, quoteId, type, commentId: IsNull() },
+    });
   }
 
   async getQuoteReactionsSummary(quoteId: string): Promise<{

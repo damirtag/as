@@ -63,6 +63,10 @@ export class AuthService {
   }
 
   async refreshAccessToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+
     let payload: { sub: string; type: string };
     try {
       payload = await this.jwt.verifyAsync(refreshToken, {
@@ -77,35 +81,40 @@ export class AuthService {
     }
 
     const stored = await this.tokensRepo.findOne({ token: refreshToken });
+
+    // Reuse detection: a signature-valid refresh token that we no longer have
+    // (or already revoked) was rotated away on a previous use. Seeing it again
+    // means it was replayed — assume theft and kill every session for the user.
     if (!stored || stored.revoked) {
-      throw new UnauthorizedException('Refresh token revoked or not found');
+      await this.tokensRepo.revokeAllForUser(payload.sub);
+      throw new UnauthorizedException('Refresh token reuse detected');
     }
 
     const user = await this.usersRepo.findById(payload.sub);
     if (!user) throw new UnauthorizedException('User not found');
 
-    const accessToken = await this.jwt.signAsync(
-      { sub: user.id },
-      { expiresIn: this.appConfig.jwtAccessTtl as JwtSignOptions['expiresIn'] },
-    );
+    // Rotate: revoke the presented token and mint a fresh access/refresh pair.
+    await this.tokensRepo.revoke(refreshToken);
+    const tokens = await this.issueTokens(user);
 
-    return { 
-      user: 
-        { 
-          id: user.id, 
-          email: user.email, 
-          username: user.username, 
-          createdAt: user.createdAt, 
-          updatedAt: user.updatedAt 
-        }, 
-      accessToken 
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 
-  async logout(refreshToken: string): Promise<void> {
-    const token = await this.tokensRepo.findOne({ token: refreshToken });
-    if (!token) throw new UnauthorizedException('Invalid refresh token');
-    await this.tokensRepo.revoke(token.id);
+  async logout(refreshToken?: string): Promise<void> {
+    // Idempotent: clearing the cookie is the source of truth for the client;
+    // here we just best-effort revoke the server-side record if it exists.
+    if (!refreshToken) return;
+    await this.tokensRepo.revoke(refreshToken);
   }
 
   private async ensureEmailFree(email: string) {
@@ -114,8 +123,6 @@ export class AuthService {
   }
 
   private async issueTokens(user: User): Promise<ITokenPair> {
-    await this.tokensRepo.revokeAllForUser(user.id);
-
     const accessToken = await this.jwt.signAsync(
       { sub: user.id },
       { expiresIn: this.appConfig.jwtAccessTtl as JwtSignOptions['expiresIn'] },

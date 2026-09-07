@@ -16,6 +16,7 @@ import {
   CommentModule,
   ReactionModule,
 } from '../modules';
+import { PresenceModule } from '../modules/presence/presence.module';
 import { SchemaConfigModule } from '../modules/schema-config/schema-config.module';
 import { AppSchemaConfigService } from '../modules/schema-config/schema-config.service';
 import { AppConfigService } from '../config/app-config.service';
@@ -46,6 +47,7 @@ import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
     QuoteModule,
     CommentModule,
     ReactionModule,
+    PresenceModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

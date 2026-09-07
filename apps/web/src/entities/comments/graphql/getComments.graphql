@@ -6,6 +6,9 @@ query GetComments($quoteId: ID!, $pagination: PaginationInput) {
         text
         userId
         createdAt
+        user {
+          username
+        }
       }
       total
       page

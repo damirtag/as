@@ -4,6 +4,10 @@ import { CombinedGraphQLErrors } from "@apollo/client/errors";
 
 import { refreshTokens } from "@/shared/lib";
 import { setAccessToken } from "@/shared/auth/token-store";
+import {
+  scheduleProactiveRefresh,
+  clearScheduledRefresh,
+} from "@/shared/auth/refresh-scheduler";
 
 let isRefreshing = false;
 let pendingRequests: (() => void)[] = [];
@@ -37,11 +41,13 @@ export const errorLink = new ErrorLink(({ error, operation, forward }) => {
       refreshTokens()
         .then((res) => {
           setAccessToken(res.accessToken);
+          scheduleProactiveRefresh();
           resolvePendingRequests();
           retryRequest();
         })
         .catch((err) => {
           setAccessToken(null);
+          clearScheduledRefresh();
           window.location.href = "/login";
           observer.error(err);
         })

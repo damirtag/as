@@ -8,6 +8,7 @@ type CommentType {
   quoteId: ID!
   text: String!
   updatedAt: DateTime!
+  user: UserType
   userId: ID!
 }
 
@@ -190,6 +191,8 @@ type UserType {
   createdAt: DateTime!
   email: String!
   id: ID!
+  isOnline: Boolean!
+  lastSeenAt: DateTime
   name: String
   role: Role!
   updatedAt: DateTime!

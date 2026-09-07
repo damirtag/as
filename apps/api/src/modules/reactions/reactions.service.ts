@@ -5,6 +5,7 @@ import {
   Quote,
   Reaction,
   User,
+  ReactionType,
 } from '@as/contracts';
 import { BaseService } from '@as/base';
 import { CacheClientService } from '@as/cache-client';
@@ -24,7 +25,7 @@ export class ReactionService extends BaseService<Reaction> {
     const cacheKey = `quote:reactions:summary:${quoteId}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      console.log('Cache hit for quote reactions summary');
+      // console.log('Cache hit for quote reactions summary');
       return reviveDates(cached);
     }
     const summary =
@@ -42,7 +43,7 @@ export class ReactionService extends BaseService<Reaction> {
     const cacheKey = `quote:reactions:paginated:${quoteId}:${page}:${limit}`;
     const cached = await this.cacheClient.get(cacheKey);
     if (cached) {
-      console.log('Cache hit for quote reactions paginated');
+      // console.log('Cache hit for quote reactions paginated');
       return reviveDates(cached);
     }
     const result = await this.reactionRepository.findQuoteReactionsPaginated(
@@ -61,6 +62,19 @@ export class ReactionService extends BaseService<Reaction> {
     },
   ): Promise<Reaction> {
     const { userId, quoteId, commentId, ...rest } = data;
+
+    if (userId && quoteId && !commentId && rest.type) {
+      const existing = await this.reactionRepository.findQuoteReactionByUserAndType(
+        userId,
+        quoteId,
+        rest.type as ReactionType,
+      );
+      if (existing) {
+        await this.reactionRepository.hardDelete(existing.id);
+        await this.invalidateQuoteReactionCache(quoteId);
+        return existing;
+      }
+    }
 
     const reaction = await this.reactionRepository.create({
       ...rest,

@@ -28,6 +28,7 @@ export class CommentRepository extends BaseRepository<Comment> {
 
     const [items, total] = await this.repo
       .createQueryBuilder("comment")
+      .leftJoinAndSelect("comment.user", "user")
       .where("comment.quoteId = :quoteId", { quoteId })
       .orderBy("comment.createdAt", "DESC")
       .skip(skip)

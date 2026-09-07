@@ -35,6 +35,12 @@ export class UserType {
 
   @Field()
   updatedAt!: Date;
+
+  @Field({ nullable: true })
+  lastSeenAt?: Date;
+
+  @Field()
+  isOnline!: boolean;
 }
 
 @InputType()
@@ -116,6 +122,9 @@ export class CommentType {
 
   @Field(() => ID)
   quoteId!: string;
+
+  @Field(() => UserType, { nullable: true })
+  user?: UserType;
 
   @Field()
   createdAt!: Date;
