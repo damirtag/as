@@ -18,10 +18,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/feed" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-yellow-400 flex items-center justify-center">
-              <span className="text-zinc-950 font-bold text-sm">Q</span>
-            </div>
-            <span className="text-zinc-100 font-semibold text-lg">Quotes</span>
+            <span className="text-zinc-100 font-semibold text-lg">damirtag/as</span>
           </Link>
 
           {/* User Menu */}
