@@ -171,7 +171,6 @@ export function QuoteCard({ quote, user, onClick, className }: QuoteCardProps) {
             })}
           </div>
 
-          {/* TODO: Implement real comments data*/}
           <div className="flex items-center gap-1.5 text-zinc-500 hover:text-blue-400 transition-colors">
             <MessageCircle size={14} />
             <span className="text-xs font-medium">

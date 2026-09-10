@@ -34,6 +34,10 @@ export class ReactionService extends BaseService<Reaction> {
     return summary;
   }
 
+  getQuoteReactionsSummaries(quoteIds: string[]) {
+    return this.reactionRepository.getQuoteReactionsSummaries(quoteIds);
+  }
+
   async findQuoteReactionsPaginated(
     quoteId: string,
     pagination: IPaginationInput,
@@ -54,6 +58,12 @@ export class ReactionService extends BaseService<Reaction> {
     return result;
   }
 
+  findQuoteReactionsPaginatedByQuoteIds(
+    keys: Array<{ id: string; pagination: IPaginationInput }>,
+  ) {
+    return this.reactionRepository.findQuoteReactionsPaginatedByQuoteIds(keys);
+  }
+
   override async create(
     data: Partial<Reaction> & {
       userId?: string;
@@ -64,11 +74,12 @@ export class ReactionService extends BaseService<Reaction> {
     const { userId, quoteId, commentId, ...rest } = data;
 
     if (userId && quoteId && !commentId && rest.type) {
-      const existing = await this.reactionRepository.findQuoteReactionByUserAndType(
-        userId,
-        quoteId,
-        rest.type as ReactionType,
-      );
+      const existing =
+        await this.reactionRepository.findQuoteReactionByUserAndType(
+          userId,
+          quoteId,
+          rest.type as ReactionType,
+        );
       if (existing) {
         await this.reactionRepository.hardDelete(existing.id);
         await this.invalidateQuoteReactionCache(quoteId);
@@ -78,12 +89,10 @@ export class ReactionService extends BaseService<Reaction> {
 
     const reaction = await this.reactionRepository.create({
       ...rest,
-      ...(userId ? ({ userId, user: { id: userId } as User } as never) : {}),
-      ...(quoteId
-        ? ({ quoteId, quote: { id: quoteId } as Quote } as never)
-        : {}),
+      ...(userId ? { userId, user: { id: userId } as User } : {}),
+      ...(quoteId ? { quoteId, quote: { id: quoteId } as Quote } : {}),
       ...(commentId
-        ? ({ commentId, comment: { id: commentId } as Comment } as never)
+        ? { commentId, comment: { id: commentId } as Comment }
         : {}),
     });
 

@@ -3,6 +3,7 @@ import { ApolloDriverConfig } from '@nestjs/apollo';
 import { BaseGraphQLSchemaConfigService } from '@as/base';
 import { AppConfigService } from '../../config/app-config.service';
 import * as path from 'path';
+import { RequestLoadersFactory } from '../../common/graphql/request-loaders';
 
 /**
  * AppSchemaConfigService
@@ -14,7 +15,10 @@ import * as path from 'path';
  */
 @Injectable()
 export class AppSchemaConfigService extends BaseGraphQLSchemaConfigService {
-  constructor(private readonly appConfig: AppConfigService) {
+  constructor(
+    private readonly appConfig: AppConfigService,
+    private readonly requestLoaders: RequestLoadersFactory,
+  ) {
     super({
       schemaOutputPath: path.join(__dirname, '../../../schema.gql'),
       playground: appConfig.isDev,
@@ -23,6 +27,7 @@ export class AppSchemaConfigService extends BaseGraphQLSchemaConfigService {
       contextFactory: ({ req }) => ({
         // req.user is populated by JwtAuthGuard / @CurrentUser()
         currentUser: (req as { user?: unknown }).user ?? null,
+        loaders: this.requestLoaders.create(),
       }),
     });
   }

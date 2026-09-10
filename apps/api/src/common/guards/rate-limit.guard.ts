@@ -2,7 +2,9 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Reflector } from '@nestjs/core';
@@ -14,6 +16,8 @@ import {
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
+  private readonly logger = new Logger(RateLimitGuard.name);
+
   constructor(
     private readonly cache: CacheClientService,
     private readonly reflector: Reflector,
@@ -27,8 +31,13 @@ export class RateLimitGuard implements CanActivate {
     }
 
     if (count > limit) {
-      throw new BadRequestException('Too many requests');
+      throw new HttpException(
+        'Too many requests',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
     }
+
+    return count;
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,21 +49,36 @@ export class RateLimitGuard implements CanActivate {
 
     if (!rules.length) return true;
 
-    const gql = GqlExecutionContext.create(context);
-    const { req } = gql.getContext();
+    const req =
+      context.getType<'graphql' | 'http'>() === 'graphql'
+        ? GqlExecutionContext.create(context).getContext<{ req: any }>().req
+        : context.switchToHttp().getRequest();
+
+    const forwardedFor = req.headers?.['x-forwarded-for'];
+    const ip = Array.isArray(forwardedFor)
+      ? forwardedFor[0]
+      : forwardedFor?.split(',')[0]?.trim() ||
+        req.socket?.remoteAddress ||
+        'unknown';
+    const operation =
+      context.getType<'graphql' | 'http'>() === 'graphql'
+        ? context.getHandler().name
+        : `${req.method} ${req.originalUrl ?? req.url}`;
+
+      this.logger.log(`Rate limit check: ip=${ip} operation=${operation}`);
 
     const ctx = {
       user: req.user,
-      ip:
-        req.headers['x-forwarded-for'] ??
-        req.socket?.remoteAddress ??
-        'unknown',
+      ip,
     };
 
     for (const rule of rules) {
       const key = rule.key(ctx);
 
-      await this.limitOrThrow(key, rule.limit, rule.windowSec);
+      const count = await this.limitOrThrow(key, rule.limit, rule.windowSec);
+      this.logger.log(
+        `Rate limit request: ip=${ip} operation=${operation} count=${count}/${rule.limit}`,
+      );
     }
 
     return true;

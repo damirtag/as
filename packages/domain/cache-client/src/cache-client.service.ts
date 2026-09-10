@@ -66,17 +66,26 @@ export class CacheClientService implements OnModuleInit, OnModuleDestroy {
   async delByPattern(pattern: string): Promise<void> {
     // Use SCAN instead of KEYS to avoid blocking
     const stream = this.client.scanStream({ match: pattern, count: 100 });
-    const pipeline = this.client.pipeline();
+    let pipeline = this.client.pipeline();
+    let pending = 0;
+    let flushChain = Promise.resolve();
+    const queueFlush = () => {
+      if (!pending) return;
+      const current = pipeline;
+      pipeline = this.client.pipeline();
+      pending = 0;
+      flushChain = flushChain.then(() => current.exec()).then(() => undefined);
+    };
     stream.on("data", (keys: string[]) => {
       for (const key of keys) pipeline.del(key);
+      pending += keys.length;
+      if (pending >= 500) queueFlush();
     });
     await new Promise<void>((resolve, reject) => {
-      stream.on("end", () =>
-        pipeline
-          .exec()
-          .then(() => resolve())
-          .catch(reject),
-      );
+      stream.on("end", () => {
+        queueFlush();
+        flushChain.then(() => resolve()).catch(reject);
+      });
       stream.on("error", reject);
     });
   }

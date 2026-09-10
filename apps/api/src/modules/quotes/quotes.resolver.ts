@@ -1,12 +1,13 @@
 import {
   Args,
+  Context,
   ID,
-  Mutation,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import type { GraphQLContext } from '../../common/graphql/request-loaders';
 import {
   CreateQuoteInput,
   PaginatedQuotes,
@@ -21,8 +22,6 @@ import {
 } from '@as/base';
 import { BaseResolver } from '@as/base';
 import { Quote } from '@as/contracts';
-import { CommentService } from '../comments/comments.service';
-import { ReactionService } from '../reactions/reactions.service';
 import { QuoteService } from './quotes.service';
 import { Owner } from '../../common/decorators/owner.decorator';
 
@@ -33,27 +32,29 @@ export class QuotesResolver extends BaseResolver(
   CreateQuoteInput,
   UpdateQuoteInput,
 ) {
-  constructor(
-    private readonly quoteService: QuoteService,
-    private readonly reactionService: ReactionService,
-    private readonly commentService: CommentService,
-  ) {
+  constructor(private readonly quoteService: QuoteService) {
     super(quoteService);
   }
 
   @ResolveField(() => UserType, { nullable: true })
-  async user(@Parent() quote: Quote) {
+  user(@Parent() quote: Quote) {
     return quote.user || null;
   }
-  
+
   @ResolveField(() => QuoteCommentsSummaryGql)
-  async commentsSummary(@Parent() quote: Quote) {
-    return this.commentService.getQuoteCommentsSummary(quote.id);
+  async commentsSummary(
+    @Parent() quote: Quote,
+    @Context() ctx: GraphQLContext,
+  ) {
+    return ctx.loaders.commentsSummary.load(quote.id);
   }
 
   @ResolveField(() => QuoteReactionsSummaryGql)
-  async reactionsSummary(@Parent() quote: Quote) {
-    return this.reactionService.getQuoteReactionsSummary(quote.id);
+  async reactionsSummary(
+    @Parent() quote: Quote,
+    @Context() ctx: GraphQLContext,
+  ) {
+    return ctx.loaders.reactionsSummary.load(quote.id);
   }
 
   @ResolveField(() => PaginatedReactions, { nullable: true })
@@ -63,15 +64,16 @@ export class QuotesResolver extends BaseResolver(
     pagination: PaginationInput | undefined,
     @Args('includeUsers', { type: () => Boolean, defaultValue: false })
     includeUsers: boolean,
+    @Context() ctx: GraphQLContext,
   ) {
     if (!includeUsers) {
       return null;
     }
 
-    return this.reactionService.findQuoteReactionsPaginated(
-      quote.id,
-      pagination ?? {},
-    );
+    return ctx.loaders.reactionsPaginated.load({
+      id: quote.id,
+      pagination: pagination ?? {},
+    });
   }
 
   @ResolveField(() => PaginatedComments)
@@ -79,11 +81,12 @@ export class QuotesResolver extends BaseResolver(
     @Parent() quote: Quote,
     @Args('pagination', { type: () => PaginationInput, nullable: true })
     pagination: PaginationInput | undefined,
+    @Context() ctx: GraphQLContext,
   ) {
-    return this.commentService.findCommentsPaginatedByQuoteId(
-      quote.id,
-      pagination ?? {},
-    );
+    return ctx.loaders.commentsPaginated.load({
+      id: quote.id,
+      pagination: pagination ?? {},
+    });
   }
 
   @Query(() => PaginatedQuotes, { name: 'findQuotesByUserId' })

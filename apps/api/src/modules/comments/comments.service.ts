@@ -9,7 +9,7 @@ import { reviveDates } from '@/utils';
 export class CommentService extends BaseService<Comment> {
   constructor(
     private readonly commentRepository: CommentRepository,
-    private readonly cacheClient: CacheClientService
+    private readonly cacheClient: CacheClientService,
   ) {
     super(commentRepository);
   }
@@ -21,10 +21,15 @@ export class CommentService extends BaseService<Comment> {
       // console.log('Cache hit for quote comments summary');
       return reviveDates(cached);
     }
-    const summary = await this.commentRepository.getQuoteCommentsSummary(quoteId);
+    const summary =
+      await this.commentRepository.getQuoteCommentsSummary(quoteId);
     await this.cacheClient.set(cacheKey, summary);
 
     return summary;
+  }
+
+  getQuoteCommentsSummaries(quoteIds: string[]) {
+    return this.commentRepository.getQuoteCommentsSummaries(quoteIds);
   }
 
   async findCommentsPaginatedByQuoteId(
@@ -45,6 +50,12 @@ export class CommentService extends BaseService<Comment> {
     return result;
   }
 
+  findCommentsPaginatedByQuoteIds(
+    keys: Array<{ id: string; pagination: IPaginationInput }>,
+  ) {
+    return this.commentRepository.findCommentsPaginatedByQuoteIds(keys);
+  }
+
   override async create(
     data: Partial<Comment> & { userId?: string; quoteId?: string },
   ): Promise<Comment> {
@@ -52,10 +63,8 @@ export class CommentService extends BaseService<Comment> {
 
     const comment = await this.commentRepository.create({
       ...rest,
-      ...(userId ? ({ userId, user: { id: userId } as User } as never) : {}),
-      ...(quoteId
-        ? ({ quoteId, quote: { id: quoteId } as Quote } as never)
-        : {}),
+      ...(userId ? { userId, user: { id: userId } as User } : {}),
+      ...(quoteId ? { quoteId, quote: { id: quoteId } as Quote } : {}),
     });
 
     if (quoteId) {
@@ -69,6 +78,12 @@ export class CommentService extends BaseService<Comment> {
     return this.commentRepository.findPaginated(pagination, {
       where: { userId },
     });
+  }
+
+  override async deleteOrFail(id: string): Promise<void> {
+    const comment = await this.findByIdOrFail(id);
+    await super.deleteOrFail(id);
+    await this.invalidateQuoteCommentsCache(comment.quoteId);
   }
 
   private async invalidateQuoteCommentsCache(quoteId: string): Promise<void> {

@@ -3,6 +3,7 @@ import type { Response, Request, CookieOptions } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from '@as/contracts';
 import { Public } from '../../common/decorators/public.decorator';
+import { RateLimit } from '../../common/decorators/rate-limit.decorator';
 
 const REFRESH_COOKIE = 'refreshToken';
 
@@ -36,6 +37,13 @@ export class AuthController {
   }
 
   @Public()
+  // Note: Rate limiting for now is not applied to the login endpoint, 
+  // but it can be enabled if needed.
+  // @RateLimit({
+  //   key: ({ ip }) => `rate-limit:auth:login:${ip}`,
+  //   limit: 5,
+  //   windowSec: 60,
+  // })
   @Post('login')
   async login(
     @Body() dto: LoginDto,

@@ -9,10 +9,15 @@ export const apolloClient = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          quotes: {
+          findPaginatedQuoteType: {
             keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
+            merge(existing, incoming, { args }) {
+              if (!existing || args?.pagination?.page === 1) return incoming;
+
+              return {
+                ...incoming,
+                items: [...(existing.items ?? []), ...(incoming.items ?? [])],
+              };
             },
           },
         },

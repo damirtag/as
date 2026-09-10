@@ -20,7 +20,7 @@ import { PresenceModule } from '../modules/presence/presence.module';
 import { SchemaConfigModule } from '../modules/schema-config/schema-config.module';
 import { AppSchemaConfigService } from '../modules/schema-config/schema-config.service';
 import { AppConfigService } from '../config/app-config.service';
-import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
+import { JwtAuthGuard, OwnerGuard, RolesGuard, RateLimitGuard } from '../common/guards';
 
 @Module({
   imports: [
@@ -53,6 +53,7 @@ import { JwtAuthGuard, OwnerGuard, RolesGuard } from '../common/guards';
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: OwnerGuard },
+    { provide: APP_GUARD, useClass: RateLimitGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
