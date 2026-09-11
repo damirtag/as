@@ -5,14 +5,10 @@ import { useAuthStore } from "@/shared/lib";
 import { ReactionType } from "@/shared/lib/api";
 import { Quote, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 
-import angry from '@/app/assets/emojis/angry.svg';
-import handshake from '@/app/assets/emojis/handshake.svg';
-import rofl from '@/app/assets/emojis/rofl.svg';
-import joy from '@/app/assets/emojis/joy.svg';
-import like from '@/app/assets/emojis/like.svg';
-import dislike from '@/app/assets/emojis/dislike.svg';
-import heart from '@/app/assets/emojis/heart.svg';
-import sad from '@/app/assets/emojis/sad.svg';
+import {
+  angry, handshake, rofl, joy, like, dislike, heart, sad
+} from '@as/emoji-assets';
+
 
 const reactionOptions: Array<{ type: ReactionType; emojiPath: string; label: string }> = [
   { type: ReactionType.Like, emojiPath: like, label: "Like" },

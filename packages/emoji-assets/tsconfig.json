@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.package.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": ".",
+        "outDir": "./dist",
+        "moduleResolution": "node",
+        "ignoreDeprecations": "5.0",
+        "allowArbitraryExtensions": true
+    },
+    "include": [
+        "src/**/*",
+        "assets/**/*.svg"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ]
+}
